@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Master Architecture Test Builder</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #64748b;
+            --bg-body: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --border-color: #cbd5e1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 16px;
+        }
+
+        @media (min-width: 768px) {
+            body { padding: 24px; }
+        }
+
+        .container {
+            max-width: 1320px;
+            margin: 0 auto;
+        }
+
+        .top-banner {
+            background: linear-gradient(135deg, #4f46e5, #4338ca);
+            color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .top-banner h1 {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+        }
+
+        .btn {
+            background-color: white;
+            color: var(--primary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: background 0.2s;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        @media (min-width: 576px) {
+            .btn { width: auto; }
+        }
+
+        .btn:hover { background-color: #f1f5f9; }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-danger { background-color: var(--danger); color: white; }
+        .btn-danger:hover { background-color: #dc2626; }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        @media (min-width: 768px) {
+            .card { padding: 20px; }
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr 1fr; gap: 20px; }
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 650px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+        }
+
+        tr:hover { background-color: #f8fafc; }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #e0e7ff;
+            color: var(--primary);
+            display: inline-block;
+        }
+
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+            padding: 10px;
+        }
+
+        .modal-card {
+            background: white;
+            width: 100%;
+            max-width: 1050px;
+            height: 92vh;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 14px 16px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 16px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .modal-footer {
+            padding: 12px 16px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 10px;
+        }
+
+        @media (min-width: 576px) {
+            .modal-footer { flex-direction: row; justify-content: flex-end; }
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .architecture-selector-box {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            background: #fcfcfc;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .arch-subject-block {
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .arch-topics-container {
+            margin-left: 14px;
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .arch-modules-container {
+            margin-left: 20px;
+            margin-top: 4px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .question-picker-list {
+            max-height: 320px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+            background: #fcfcfc;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .question-card-item {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .q-card-content { flex-grow: 1; }
+        .q-card-text { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; }
+        
+        .q-meta-strip {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .q-card-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4px;
+            margin-bottom: 6px;
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        @media (min-width: 640px) {
+            .q-card-options { grid-template-columns: 1fr 1fr; }
+        }
+
+        .q-option-preview {
+            font-size: 0.85rem;
+            color: #475569;
+        }
+
+        .q-option-preview.correct-option {
+            color: #047857;
+            font-weight: 700;
+            background: #d1fae5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-banner">
+        <div>
+            <h1>🌐 Master Architecture Test Suite (testSeriesDB)</h1>
+            <p>Saves Subject, Topic, Module hierarchy, and complete questions array directly for reliable rendering.</p>
+        </div>
+        <button class="btn btn-danger" onclick="clearTestSeriesDatabase()" style="width: auto;">Reset testSeriesDB</button>
+    </div>
+
+    <!-- EXPORT & IMPORT MANAGEMENT TOOLBAR -->
+    <div class="card" style="background: #f1f5f9; margin-bottom: 20px;">
+        <h3 style="font-size: 1rem; margin-bottom: 12px;">💾 Database Backup & Export / Import</h3>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <!-- Test Series DB Actions -->
+            <button class="btn btn-primary" onclick="exportDatabase('testSeriesDB', 'testSeriesDB_backup.json')">Export testSeriesDB JSON</button>
+            <label class="btn" style="background: white; border: 1px solid var(--border-color); cursor: pointer; margin-bottom: 0;">
+                Import testSeriesDB <input type="file" accept=".json" style="display: none;" onchange="importDatabase(event, 'testSeriesDB')">
+            </label>
+
+            <!-- Results DB Actions -->
+            <button class="btn btn-primary" onclick="exportDatabase('savedTestResultsDB', 'savedTestResultsDB_backup.json')">Export Results JSON</button>
+            <label class="btn" style="background: white; border: 1px solid var(--border-color); cursor: pointer; margin-bottom: 0;">
+                Import Results <input type="file" accept=".json" style="display: none;" onchange="importDatabase(event, 'savedTestResultsDB')">
+            </label>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="toolbar">
+            <h3 style="font-size: 1.1rem;">Master Test Repository</h3>
+            <button class="btn btn-primary" onclick="openMasterTestModal()">+ Create Master Test</button>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Test Title</th>
+                        <th>Duration</th>
+                        <th>Questions Count</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="masterTestsTableBody">
+                    <tr><td colspan="5" style="text-align: center; color: var(--secondary);">No tests found in testSeriesDB.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- MASTER TEST MODAL -->
+<div class="modal-overlay" id="masterTestModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3 id="masterModalTitle" style="font-size: 1.1rem;">Configure Master Test</h3>
+            <button class="btn" style="background: transparent; color: white; width: auto;" onclick="closeMasterTestModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Master Test Title</label>
+                    <input type="text" class="form-control" id="fMasterTitle" placeholder="e.g. Comprehensive Assessment">
+                </div>
+                <div class="form-group">
+                    <label>Duration (Minutes)</label>
+                    <input type="number" class="form-control" id="fMasterDuration" value="120" min="1">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Source Modules Architecture</label>
+                <div class="architecture-selector-box" id="masterSelectorBox"></div>
+            </div>
+
+            <div class="form-group">
+                <label style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                    <span>Aggregated Question Pool (WithOptions & Subject/Topic/Module Context)</span>
+                    <span id="masterSelectedCountBadge" class="badge">0 Selected</span>
+                </label>
+                <div class="question-picker-list" id="masterQuestionPickerList">
+                    <div style="text-align: center; color: var(--secondary); padding: 15px;">Select modules above to populate questions.</div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" style="background: #e2e8f0; color: var(--text-main);" onclick="closeMasterTestModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveMasterTest()">Save Master Test</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const STANDARD_DB_KEY = "testSeriesDB";
+    let currentEditingMasterId = null;
+
+    function getTestSeriesData() {
+        const stored = localStorage.getItem(STANDARD_DB_KEY);
+        if (!stored) return { tests: [], subjects: [] };
+        try { return JSON.parse(stored); } catch(e) { return { tests: [], subjects: [] }; }
+    }
+
+    function saveTestSeriesData(db) {
+        localStorage.setItem(STANDARD_DB_KEY, JSON.stringify(db));
+        renderMasterTestsTable();
+    }
+
+    function renderMasterTestsTable() {
+        const tbody = document.getElementById("masterTestsTableBody");
+        const db = getTestSeriesData();
+        tbody.innerHTML = "";
+
+        if (!db.tests || db.tests.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--secondary);">No tests found in testSeriesDB.</td></tr>`;
+            return;
+        }
+
+        db.tests.forEach(test => {
+            const count = test.questions ? test.questions.length : (test.questionIds ? test.questionIds.length : 0);
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>#${test.id}</td>
+                <td><strong>${test.title}</strong></td>
+                <td>${test.duration} mins</td>
+                <td><span class="badge">${count} Questions</span></td>
+                <td>
+                    <div style="display: flex; gap: 4px;">
+                        <button class="btn btn-primary" style="padding: 4px 8px; font-size: 0.8rem; width: auto;" onclick="openEditMasterTest(${test.id})">Edit</button>
+                        <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8rem; width: auto;" onclick="deleteMasterTest(${test.id})">Delete</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function buildMasterArchitectureTree(selectedModIds = [], selectedQIds = []) {
+        const container = document.getElementById("masterSelectorBox");
+        container.innerHTML = "";
+        
+        const db = getTestSeriesData();
+        if (!db.subjects || db.subjects.length === 0) {
+            container.innerHTML = `<div style="text-align: center; color: var(--secondary); padding: 10px;">No source subjects found in database.</div>`;
+            return;
+        }
+
+        db.subjects.forEach(sub => {
+            const subBlock = document.createElement("div");
+            subBlock.className = "arch-subject-block";
+            subBlock.innerHTML = `<strong>📚 ${sub.name}</strong>`;
+            
+            const topicsContainer = document.createElement("div");
+            topicsContainer.className = "arch-topics-container";
+
+            if (sub.topics) {
+                sub.topics.forEach(topic => {
+                    const topicDiv = document.createElement("div");
+                    topicDiv.innerHTML = `📁 <strong>${topic.name}</strong>`;
+                    
+                    const modulesContainer = document.createElement("div");
+                    modulesContainer.className = "arch-modules-container";
+
+                    if (topic.modules) {
+                        topic.modules.forEach(mod => {
+                            const isChecked = selectedModIds.includes(mod.id) ? "checked" : "";
+                            const qLen = mod.questions ? mod.questions.length : 0;
+                            
+                            const modLabel = document.createElement("label");
+                            modLabel.style.cssText = "font-size: 0.82rem; display: flex; align-items: center; gap: 4px; background: #fff; padding: 4px 8px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer;";
+                            modLabel.innerHTML = `
+                                <input type="checkbox" value="${mod.id}" class="master-mod-checkbox" ${isChecked} onchange="loadMasterQuestionsPool()"> 
+                                📦 ${mod.name} (${qLen} Qs)
+                            `;
+                            modulesContainer.appendChild(modLabel);
+                        });
+                    }
+                    topicDiv.appendChild(modulesContainer);
+                    topicsContainer.appendChild(topicDiv);
+                });
+            }
+            subBlock.appendChild(topicsContainer);
+            container.appendChild(subBlock);
+        });
+
+        loadMasterQuestionsPool(selectedQIds);
+    }
+
+    function loadMasterQuestionsPool(preselectedQIds = []) {
+        const checkedModules = document.querySelectorAll(".master-mod-checkbox:checked");
+        const moduleIds = Array.from(checkedModules).map(cb => Number(cb.value));
+        const pickerList = document.getElementById("masterQuestionPickerList");
+        
+        pickerList.innerHTML = "";
+        let loadedQuestions = [];
+
+        const db = getTestSeriesData();
+        db.subjects?.forEach(sub => {
+            sub.topics?.forEach(topic => {
+                topic.modules?.forEach(mod => {
+                    if (moduleIds.includes(mod.id) && mod.questions) {
+                        mod.questions.forEach(q => {
+                            loadedQuestions.push({ 
+                                ...q, 
+                                subjectName: sub.name,
+                                topicName: topic.name,
+                                moduleName: mod.name 
+                            });
+                        });
+                    }
+                });
+            });
+        });
+
+        if (loadedQuestions.length === 0) {
+            pickerList.innerHTML = `<div style="text-align: center; color: var(--secondary); padding: 15px;">No questions found in selected modules.</div>`;
+            document.getElementById("masterSelectedCountBadge").textContent = "0 Selected";
+            return;
+        }
+
+        loadedQuestions.forEach(q => {
+            const isChecked = preselectedQIds.length === 0 || preselectedQIds.includes(q.id) ? "checked" : "";
+            
+            const qCase = q.caseType || q.case || q.questionCase || q.category || "Standard";
+            const qMarks = q.marks !== undefined ? q.marks : 1;
+            const qNegMarks = q.negativeMarks !== undefined ? q.negativeMarks : 0;
+
+            let optionsHtml = '';
+            const rawOptions = q.options || q.choices || q.answers;
+            if (rawOptions && Array.isArray(rawOptions)) {
+                optionsHtml = '<div class="q-card-options">';
+                rawOptions.forEach((opt, idx) => {
+                    const optionLetter = String.fromCharCode(65 + idx);
+                    const isCorrect = 
+                        q.correctOption === optionLetter || 
+                        q.correct === idx || 
+                        q.correctOption === idx || 
+                        (typeof opt === 'object' && opt !== null && (opt.isCorrect || opt.correct));
+                        
+                    const displayText = (typeof opt === 'object' && opt !== null) ? (opt.text || opt.value || JSON.stringify(opt)) : opt;
+
+                    optionsHtml += `<div class="q-option-preview ${isCorrect ? 'correct-option' : ''}">${optionLetter}. ${displayText} ${isCorrect ? ' ✓' : ''}</div>`;
+                });
+                optionsHtml += '</div>';
+            }
+
+            const qText = q.text || q.questionText || q.title || q.prompt || q.question || "Untitled Question";
+
+            const card = document.createElement("div");
+            card.className = "question-card-item";
+            card.dataset.questionJson = encodeURIComponent(JSON.stringify(q));
+            
+            card.innerHTML = `
+                <input type="checkbox" value="${q.id}" class="master-q-checkbox" ${isChecked} onchange="updateMasterSelectionCount()">
+                <div class="q-card-content">
+                    <div class="q-card-text">${qText}</div>
+                    
+                    <div class="q-meta-strip">
+                        <span class="badge">${q.subjectName} > ${q.topicName} > ${q.moduleName}</span>
+                        <span class="badge badge-warning">Case: ${qCase}</span>
+                        <span class="badge badge-success">Marks: +${qMarks} / -${qNegMarks}</span>
+                    </div>
+
+                    ${optionsHtml}
+                </div>
+            `;
+            pickerList.appendChild(card);
+        });
+
+        updateMasterSelectionCount();
+    }
+
+    function updateMasterSelectionCount() {
+        const count = document.querySelectorAll(".master-q-checkbox:checked").length;
+        document.getElementById("masterSelectedCountBadge").textContent = `${count} Selected`;
+    }
+
+    function openMasterTestModal() {
+        currentEditingMasterId = null;
+        document.getElementById("masterModalTitle").textContent = "Create Master Architecture Test";
+        document.getElementById("fMasterTitle").value = "";
+        document.getElementById("fMasterDuration").value = 120;
+        buildMasterArchitectureTree([], []);
+        document.getElementById("masterTestModal").style.display = "flex";
+    }
+
+    function closeMasterTestModal() {
+        document.getElementById("masterTestModal").style.display = "none";
+    }
+
+    function saveMasterTest() {
+        const title = document.getElementById("fMasterTitle").value.trim();
+        const duration = parseInt(document.getElementById("fMasterDuration").value) || 120;
+        
+        if (!title) {
+            alert("Please enter a master test title.");
+            return;
+        }
+
+        const selectedModuleIds = Array.from(document.querySelectorAll(".master-mod-checkbox:checked")).map(cb => Number(cb.value));
+        const checkedQuestionCards = document.querySelectorAll(".master-q-checkbox:checked");
+        
+        const questionIds = [];
+        const questions = [];
+
+        checkedQuestionCards.forEach(cb => {
+            const card = cb.closest(".question-card-item");
+            if (card && card.dataset.questionJson) {
+                const qObj = JSON.parse(decodeURIComponent(card.dataset.questionJson));
+                questionIds.push(qObj.id);
+                questions.push(qObj);
+            }
+        });
+
+        if (questions.length === 0) {
+            alert("Please select at least one question.");
+            return;
+        }
+
+        let db = getTestSeriesData();
+        if (!db.tests) db.tests = [];
+
+        if (currentEditingMasterId) {
+            const test = db.tests.find(t => t.id === currentEditingMasterId);
+            if (test) {
+                test.title = title;
+                test.duration = duration;
+                test.selectedModuleIds = selectedModuleIds;
+                test.questionIds = questionIds;
+                test.questions = questions;
+            }
+        } else {
+            const newTest = {
+                id: Date.now(),
+                title,
+                duration,
+                selectedModuleIds,
+                questionIds,
+                questions
+            };
+            db.tests.push(newTest);
+        }
+
+        saveTestSeriesData(db);
+        closeMasterTestModal();
+    }
+
+    function openEditMasterTest(testId) {
+        const db = getTestSeriesData();
+        const test = db.tests.find(t => t.id === testId);
+        if (!test) return;
+
+        currentEditingMasterId = testId;
+        document.getElementById("masterModalTitle").textContent = "Edit Master Architecture Test";
+        document.getElementById("fMasterTitle").value = test.title;
+        document.getElementById("fMasterDuration").value = test.duration;
+        
+        const qIds = test.questionIds || (test.questions ? test.questions.map(q => q.id) : []);
+        buildMasterArchitectureTree(test.selectedModuleIds || [], qIds);
+        document.getElementById("masterTestModal").style.display = "flex";
+    }
+
+    function deleteMasterTest(testId) {
+        if (!confirm("Are you sure you want to delete this test?")) return;
+        let db = getTestSeriesData();
+        db.tests = db.tests.filter(t => t.id !== testId);
+        saveTestSeriesData(db);
+    }
+
+    function clearTestSeriesDatabase() {
+        if (confirm("Warning: This will clear all tests from testSeriesDB. Proceed?")) {
+            localStorage.removeItem(STANDARD_DB_KEY);
+            renderMasterTestsTable();
+        }
+    }
+
+    function exportDatabase(storageKey, filename) {
+        const data = localStorage.getItem(storageKey);
+        if (!data) {
+            alert(`No data found for ${storageKey} to export.`);
+            return;
+        }
+
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function importDatabase(event, storageKey) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const parsedData = JSON.parse(e.target.result);
+                
+                if (storageKey === 'testSeriesDB' && !parsedData.subjects && !parsedData.tests) {
+                    throw new Error("Invalid structure for testSeriesDB JSON.");
+                }
+
+                localStorage.setItem(storageKey, JSON.stringify(parsedData));
+                alert(`Successfully imported data into ${storageKey}!`);
+                
+                if (storageKey === 'testSeriesDB' && typeof renderMasterTestsTable === 'function') {
+                    renderMasterTestsTable();
+                }
+            } catch (error) {
+                alert(`Import failed: ${error.message}`);
+            }
+            event.target.value = '';
+        };
+        reader.readAsText(file);
+    }
+
+    window.onload = () => {
+        renderMasterTestsTable();
+    };
+</script>
+
+</body>
+</html>
