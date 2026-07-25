@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Test Series Admin CMS</title>
+
+<link rel="stylesheet" href="admin.css">
+
+</head>
+
+
+<body>
+
+
+<div class="layout">
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+
+<div class="logo">
+📚 Test CMS
+</div>
+
+
+
+<button onclick="openPage('dashboard')">
+🏠 Dashboard
+</button>
+
+
+<button onclick="openPage('subjects')">
+📚 Subjects
+</button>
+
+
+<button onclick="openPage('topics')">
+📖 Topics
+</button>
+
+
+<button onclick="openPage('modules')">
+📂 Modules
+</button>
+
+
+<button onclick="openPage('questions')">
+📝 Question Bank
+</button>
+
+
+<button onclick="openPage('builder')">
+⚙ Test Builder
+</button>
+
+
+
+<hr>
+
+
+<button onclick="exportBackup()">
+⬇ Backup
+</button>
+
+
+<button onclick="document.getElementById('restoreFile').click()">
+⬆ Restore
+</button>
+
+
+<input 
+type="file"
+id="restoreFile"
+hidden
+accept=".json">
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+<main class="main">
+
+
+<header class="topbar">
+
+
+<h1>
+Online Test Series Manager
+</h1>
+
+
+
+<input
+id="globalSearch"
+placeholder="Search...">
+
+
+</header>
+
+
+
+
+
+
+
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="page active">
+
+
+<h2>
+Dashboard
+</h2>
+
+
+<div class="cards">
+
+
+<div class="card">
+<h1 id="countSubjects">0</h1>
+<p>Subjects</p>
+</div>
+
+
+
+<div class="card">
+<h1 id="countTopics">0</h1>
+<p>Topics</p>
+</div>
+
+
+
+<div class="card">
+<h1 id="countModules">0</h1>
+<p>Modules</p>
+</div>
+
+
+
+<div class="card">
+<h1 id="countQuestions">0</h1>
+<p>Questions</p>
+</div>
+
+
+
+<div class="card">
+<h1 id="countTests">0</h1>
+<p>Tests</p>
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- SUBJECTS -->
+
+
+<section id="subjects" class="page">
+
+
+<div class="page-header">
+
+<h2>
+Subjects
+</h2>
+
+
+<button onclick="openModal('subjectModal')">
++ Add Subject
+</button>
+
+
+</div>
+
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+Subject
+</th>
+
+<th>
+Topics
+</th>
+
+<th>
+Action
+</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody id="subjectTable">
+
+</tbody>
+
+
+
+</table>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- TOPICS -->
+
+
+<section id="topics" class="page">
+
+
+<div class="page-header">
+
+
+<h2>
+Topics
+</h2>
+
+
+
+<button onclick="openModal('topicModal')">
++ Add Topic
+</button>
+
+
+</div>
+
+
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+<th>
+Subject
+</th>
+
+
+<th>
+Topic
+</th>
+
+
+<th>
+Modules
+</th>
+
+
+<th>
+Action
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="topicTable">
+
+</tbody>
+
+
+
+</table>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- MODULES -->
+
+
+<section id="modules" class="page">
+
+
+<div class="page-header">
+
+
+<h2>
+Modules
+</h2>
+
+
+
+<button onclick="openModal('moduleModal')">
++ Add Module
+</button>
+
+
+</div>
+
+
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+Subject
+</th>
+
+<th>
+Topic
+</th>
+
+<th>
+Module
+</th>
+
+<th>
+Questions
+</th>
+
+<th>
+Action
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="moduleTable">
+
+</tbody>
+
+
+
+</table>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- QUESTION BANK -->
+
+
+<section id="questions" class="page">
+
+
+<div class="page-header">
+
+
+<h2>
+Question Bank
+</h2>
+
+
+
+<button onclick="openModal('questionModal')">
++ Add Question
+</button>
+
+
+</div>
+
+
+
+
+
+<div class="filters">
+
+
+<select 
+id="filterQuestionSubject"
+onchange="loadQuestionTopics()">
+</select>
+
+
+
+<select
+id="filterQuestionTopic"
+onchange="loadQuestionModules()">
+</select>
+
+
+
+<select
+id="filterQuestionModule"
+onchange="loadQuestions()">
+</select>
+
+
+
+<input
+id="questionSearch"
+placeholder="Search question"
+onkeyup="loadQuestions()">
+
+
+
+</div>
+
+
+
+
+
+<table>
+
+
+<thead>
+
+
+<tr>
+
+<th>
+Question
+</th>
+
+
+<th>
+Module
+</th>
+
+
+<th>
+Difficulty
+</th>
+
+
+<th>
+Action
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="questionTable">
+
+</tbody>
+
+
+</table>
+
+
+
+<div class="pagination">
+
+
+<button onclick="previousPage()">
+Previous
+</button>
+
+
+<span id="pageNumber">
+1
+</span>
+
+
+<button onclick="nextPage()">
+Next
+</button>
+
+
+</div>
+
+
+</section>
+<!-- TEST BUILDER -->
+
+<section id="builder" class="page">
+
+
+<h2>
+Create Test
+</h2>
+
+
+
+<div class="builder-box">
+
+
+<input
+id="testName"
+placeholder="Test name">
+
+
+
+<select id="builderSubject"
+onchange="loadBuilderTopics()">
+
+</select>
+
+
+
+
+<select id="builderTopic"
+onchange="loadBuilderModules()">
+
+</select>
+
+
+
+
+<select id="builderModule"
+onchange="loadBuilderQuestions()">
+
+</select>
+
+
+
+
+
+<div class="builder-toolbar">
+
+
+<input
+id="builderSearch"
+placeholder="Search questions"
+onkeyup="loadBuilderQuestions()">
+
+
+
+<input
+id="randomCount"
+type="number"
+placeholder="Random count">
+
+
+
+<button onclick="randomSelectQuestions()">
+
+Random Select
+
+</button>
+
+
+</div>
+
+
+
+
+
+<h3>
+Select Questions
+</h3>
+
+
+<div id="builderQuestions"
+class="question-selector">
+
+</div>
+
+
+
+
+<p>
+
+Selected Questions:
+
+<span id="selectedCount">
+0
+</span>
+
+</p>
+
+
+
+
+
+<input
+id="testDuration"
+type="number"
+value="60"
+placeholder="Duration minutes">
+
+
+
+
+
+<button onclick="createTest()">
+
+Create Test
+
+</button>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+</main>
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ============================= -->
+<!-- SUBJECT MODAL -->
+<!-- ============================= -->
+
+
+<div class="modal" id="subjectModal">
+
+
+<div class="modal-box">
+
+
+<button class="close"
+onclick="closeModal('subjectModal')">
+×
+</button>
+
+
+
+<h2>
+Add Subject
+</h2>
+
+
+
+<input
+id="subjectName"
+placeholder="Subject name">
+
+
+
+<button onclick="saveSubject()">
+
+Save
+
+</button>
+
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ============================= -->
+<!-- TOPIC MODAL -->
+<!-- ============================= -->
+
+
+<div class="modal" id="topicModal">
+
+
+<div class="modal-box">
+
+
+<button class="close"
+onclick="closeModal('topicModal')">
+×
+</button>
+
+
+
+<h2>
+Add Topic
+</h2>
+
+
+
+<select
+id="topicSubject">
+
+</select>
+
+
+
+
+<input
+id="topicName"
+placeholder="Topic name">
+
+
+
+<button onclick="saveTopic()">
+
+Save
+
+</button>
+
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ============================= -->
+<!-- MODULE MODAL -->
+<!-- ============================= -->
+
+
+<div class="modal" id="moduleModal">
+
+
+<div class="modal-box">
+
+
+<button class="close"
+onclick="closeModal('moduleModal')">
+×
+</button>
+
+
+
+<h2>
+Add Module
+</h2>
+
+
+
+<select
+id="moduleSubject"
+onchange="loadModuleTopics()">
+
+</select>
+
+
+
+
+<select
+id="moduleTopic">
+
+</select>
+
+
+
+
+<input
+id="moduleName"
+placeholder="Module name">
+
+
+
+<button onclick="saveModule()">
+
+Save
+
+</button>
+
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ============================= -->
+<!-- QUESTION MODAL -->
+<!-- ============================= -->
+
+
+<div class="modal" id="questionModal">
+
+
+<div class="modal-box large">
+
+
+<button class="close"
+onclick="closeModal('questionModal')">
+×
+</button>
+
+
+
+<h2>
+Add Question
+</h2>
+
+
+
+
+<select
+id="questionSubject"
+onchange="loadQuestionTopics()">
+
+</select>
+
+
+
+
+<select
+id="questionTopic"
+onchange="loadQuestionModules()">
+
+</select>
+
+
+
+
+<select
+id="questionModule">
+
+</select>
+
+
+
+
+
+
+
+<textarea
+id="questionText"
+placeholder="Question">
+
+</textarea>
+
+
+
+
+
+<input
+id="optionA"
+placeholder="Option A">
+
+
+<input
+id="optionB"
+placeholder="Option B">
+
+
+<input
+id="optionC"
+placeholder="Option C">
+
+
+<input
+id="optionD"
+placeholder="Option D">
+
+
+
+
+
+
+<select id="correctAnswer">
+
+<option value="A">
+A
+</option>
+
+<option value="B">
+B
+</option>
+
+<option value="C">
+C
+</option>
+
+<option value="D">
+D
+</option>
+
+
+</select>
+
+
+
+
+
+<select id="difficulty">
+
+
+<option>
+Easy
+</option>
+
+
+<option>
+Medium
+</option>
+
+
+<option>
+Hard
+</option>
+
+
+</select>
+
+
+
+
+
+
+<button onclick="saveQuestion()">
+
+Save Question
+
+</button>
+
+
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ============================= -->
+<!-- EDIT QUESTION MODAL -->
+<!-- ============================= -->
+
+
+<div class="modal" id="editModal">
+
+
+<div class="modal-box">
+
+
+<button class="close"
+onclick="closeModal('editModal')">
+×
+</button>
+
+
+
+<h2>
+Edit Question
+</h2>
+
+
+
+
+<input
+id="editQuestionId"
+hidden>
+
+
+
+
+<textarea
+id="editQuestionText">
+
+</textarea>
+
+
+
+<input id="editOptionA">
+
+<input id="editOptionB">
+
+<input id="editOptionC">
+
+<input id="editOptionD">
+
+
+
+
+
+<select id="editCorrectAnswer">
+
+<option>A</option>
+
+<option>B</option>
+
+<option>C</option>
+
+<option>D</option>
+
+</select>
+
+
+
+
+
+<button onclick="updateQuestion()">
+
+Update
+
+</button>
+
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src="database.js"></script>
+
+<script src="admin.js"></script>
+
+
+</body>
+
+</html>

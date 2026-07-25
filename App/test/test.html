@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Test</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1, h2 {
+            margin: 0 0 15px 0;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        select, input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .timer {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--danger-color);
+        }
+
+        .question-block {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .question-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+
+        .option-label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: #f9fafb;
+        }
+
+        .option-label input {
+            margin-right: 10px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .results-box {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .score-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 15px 0;
+        }
+
+        .review-item {
+            background: #f9fafb;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            text-align: left;
+            border-left: 4px solid #cbd5e1;
+        }
+
+        .review-item.correct {
+            border-left-color: var(--success-color);
+        }
+
+        .review-item.incorrect {
+            border-left-color: var(--danger-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Selection Screen -->
+    <div id="selectionScreen" class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h1>Select a Test to Take</h1>
+            <a href="dashboard.html" class="btn" style="background-color: #6b7280; font-size: 0.85rem; padding: 6px 12px;">View Results Dashboard</a>
+        </div>
+        <p>Enter your full name and choose Subject, Topic, Module, and Test sequentially:</p>
+        
+        <div class="form-group">
+            <label for="userFullName">Full Name</label>
+            <input type="text" id="userFullName" placeholder="Enter your full name" required oninput="checkFormValidity()">
+        </div>
+
+        <div class="form-group">
+            <label for="subjectSelect">Subject</label>
+            <select id="subjectSelect" onchange="onSubjectChange()">
+                <option value="">-- Select Subject --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="topicSelect">Topic</label>
+            <select id="topicSelect" onchange="onTopicChange()" disabled>
+                <option value="">-- Select Topic --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="moduleSelect">Module</label>
+            <select id="moduleSelect" onchange="onModuleChange()" disabled>
+                <option value="">-- Select Module --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="testSelect">Test</label>
+            <select id="testSelect" onchange="checkFormValidity()" disabled>
+                <option value="">-- Select Test --</option>
+            </select>
+        </div>
+
+        <button class="btn" id="startTestBtn" onclick="startTest()" disabled>Start Test</button>
+    </div>
+
+    <!-- Active Test Screen -->
+    <div id="testScreen" class="card hidden">
+        <header>
+            <div>
+                <h2 id="activeTestTitle" style="margin-bottom: 4px;">Test Title</h2>
+                <span id="candidateNameDisplay" style="font-size: 0.9rem; color: #6b7280; font-weight: 600;"></span>
+            </div>
+            <div class="timer" id="timerDisplay">Time Left: 15:00</div>
+        </header>
+        <form id="testForm" onsubmit="submitTest(event)">
+            <div id="questionsContainer">
+                <!-- Questions injected dynamically -->
+            </div>
+            <button type="submit" class="btn btn-success">Submit Test</button>
+        </form>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="resultScreen" class="card hidden">
+        <div class="results-box">
+            <h2>Test Submitted Successfully!</h2>
+            <p id="resultCandidateName" style="font-weight: 600; color: #4b5563;"></p>
+            <p>Your Score:</p>
+            <div class="score-display" id="scoreDisplay">0 / 0</div>
+            <p id="resultFeedback"></p>
+            
+            <div id="detailedReviewContainer" style="margin-top: 20px;">
+                <!-- Detailed Breakdown per Question -->
+            </div>
+
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+                <button class="btn" onclick="resetToSelection()">Take Another Test</button>
+                <a href="dashboard.html" class="btn" style="background-color: #6b7280;">Go to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const DB_KEY = "testSeriesDB";
+    const RESULTS_DB_KEY = "testSeriesResultsDB";
+    
+    let currentActiveTest = null;
+    let currentModuleQuestions = [];
+    let currentCandidateName = "";
+    let timerInterval = null;
+
+    // Selections tracker for metadata
+    let selectedSubjectObj = null;
+    let selectedTopicObj = null;
+    let selectedModuleObj = null;
+
+    function getDB() {
+        const db = localStorage.getItem(DB_KEY);
+        if (!db) return { subjects: [] };
+        try {
+            return JSON.parse(db);
+        } catch (e) {
+            return { subjects: [] };
+        }
+    }
+
+    function getResultsDB() {
+        const results = localStorage.getItem(RESULTS_DB_KEY);
+        if (!results) return [];
+        try {
+            return JSON.parse(results);
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveResultToDB(resultObject) {
+        const results = getResultsDB();
+        results.push(resultObject);
+        localStorage.setItem(RESULTS_DB_KEY, JSON.stringify(results));
+    }
+
+    function initSelectionScreen() {
+        const db = getDB();
+        const subjectSelect = document.getElementById("subjectSelect");
+        
+        document.getElementById("userFullName").value = "";
+        subjectSelect.innerHTML = `<option value="">-- Select Subject --</option>`;
+        document.getElementById("topicSelect").innerHTML = `<option value="">-- Select Topic --</option>`;
+        document.getElementById("moduleSelect").innerHTML = `<option value="">-- Select Module --</option>`;
+        document.getElementById("testSelect").innerHTML = `<option value="">-- Select Test --</option>`;
+        
+        document.getElementById("topicSelect").disabled = true;
+        document.getElementById("moduleSelect").disabled = true;
+        document.getElementById("testSelect").disabled = true;
+        document.getElementById("startTestBtn").disabled = true;
+
+        selectedSubjectObj = null;
+        selectedTopicObj = null;
+        selectedModuleObj = null;
+
+        if (db.subjects && Array.isArray(db.subjects)) {
+            db.subjects.forEach(subject => {
+                const option = document.createElement("option");
+                option.value = subject.id;
+                option.textContent = subject.name;
+                subjectSelect.appendChild(option);
+            });
+        }
+    }
+
+    function checkFormValidity() {
+        const fullName = document.getElementById("userFullName").value.trim();
+        const testSelectVal = document.getElementById("testSelect").value;
+        const startBtn = document.getElementById("startTestBtn");
+
+        startBtn.disabled = !(fullName.length > 0 && testSelectVal !== "");
+    }
+
+    function onSubjectChange() {
+        const subjectId = Number(document.getElementById("subjectSelect").value);
+        const topicSelect = document.getElementById("topicSelect");
+        
+        topicSelect.innerHTML = `<option value="">-- Select Topic --</option>`;
+        document.getElementById("moduleSelect").innerHTML = `<option value="">-- Select Module --</option>`;
+        document.getElementById("testSelect").innerHTML = `<option value="">-- Select Test --</option>`;
+        
+        document.getElementById("moduleSelect").disabled = true;
+        document.getElementById("testSelect").disabled = true;
+        checkFormValidity();
+
+        selectedSubjectObj = null;
+        selectedTopicObj = null;
+        selectedModuleObj = null;
+
+        if (!subjectId) {
+            topicSelect.disabled = true;
+            return;
+        }
+
+        const db = getDB();
+        selectedSubjectObj = db.subjects.find(s => s.id === subjectId);
+
+        if (selectedSubjectObj && selectedSubjectObj.topics) {
+            selectedSubjectObj.topics.forEach(topic => {
+                const option = document.createElement("option");
+                option.value = topic.id;
+                option.textContent = topic.name;
+                topicSelect.appendChild(option);
+            });
+            topicSelect.disabled = false;
+        }
+    }
+
+    function onTopicChange() {
+        const topicId = Number(document.getElementById("topicSelect").value);
+        const moduleSelect = document.getElementById("moduleSelect");
+
+        moduleSelect.innerHTML = `<option value="">-- Select Module --</option>`;
+        document.getElementById("testSelect").innerHTML = `<option value="">-- Select Test --</option>`;
+        document.getElementById("testSelect").disabled = true;
+        checkFormValidity();
+
+        selectedTopicObj = null;
+        selectedModuleObj = null;
+
+        if (!topicId) {
+            moduleSelect.disabled = true;
+            return;
+        }
+
+        selectedTopicObj = selectedSubjectObj ? selectedSubjectObj.topics.find(t => t.id === topicId) : null;
+
+        if (selectedTopicObj && selectedTopicObj.modules) {
+            selectedTopicObj.modules.forEach(module => {
+                const option = document.createElement("option");
+                option.value = module.id;
+                option.textContent = module.name;
+                moduleSelect.appendChild(option);
+            });
+            moduleSelect.disabled = false;
+        }
+    }
+
+    function onModuleChange() {
+        const moduleId = Number(document.getElementById("moduleSelect").value);
+        const testSelect = document.getElementById("testSelect");
+
+        testSelect.innerHTML = `<option value="">-- Select Test --</option>`;
+        checkFormValidity();
+
+        selectedModuleObj = null;
+
+        if (!moduleId) {
+            testSelect.disabled = true;
+            return;
+        }
+
+        selectedModuleObj = selectedTopicObj ? selectedTopicObj.modules.find(m => m.id === moduleId) : null;
+
+        if (selectedModuleObj && selectedModuleObj.tests) {
+            selectedModuleObj.tests.forEach(test => {
+                const option = document.createElement("option");
+                option.value = test.id;
+                option.textContent = test.name || test.title || "Untitled Test";
+                testSelect.appendChild(option);
+            });
+            testSelect.disabled = false;
+        }
+    }
+
+    function startTest() {
+        const fullNameInput = document.getElementById("userFullName").value.trim();
+        const testId = Number(document.getElementById("testSelect").value);
+
+        if (!fullNameInput) {
+            alert("Please enter your full name.");
+            return;
+        }
+
+        if (!testId) {
+            alert("Please select a valid test.");
+            return;
+        }
+
+        currentCandidateName = fullNameInput;
+        const foundTest = selectedModuleObj && selectedModuleObj.tests ? selectedModuleObj.tests.find(t => t.id === testId) : null;
+
+        if (!foundTest) {
+            alert("Test could not be found.");
+            return;
+        }
+
+        currentActiveTest = foundTest;
+        currentModuleQuestions = selectedModuleObj.questions || [];
+
+        document.getElementById("selectionScreen").classList.add("hidden");
+        document.getElementById("testScreen").classList.remove("hidden");
+
+        document.getElementById("activeTestTitle").textContent = foundTest.name || foundTest.title || "Test";
+        document.getElementById("candidateNameDisplay").textContent = `Candidate: ${currentCandidateName}`;
+
+        renderQuestions();
+        startTimer((foundTest.duration || 15) * 60);
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById("questionsContainer");
+        container.innerHTML = "";
+
+        let testQuestions = [];
+        if (currentActiveTest.questionIds && currentActiveTest.questionIds.length > 0) {
+            testQuestions = currentModuleQuestions.filter(q => currentActiveTest.questionIds.includes(q.id));
+        } else {
+            testQuestions = currentModuleQuestions;
+        }
+
+        if (testQuestions.length === 0) {
+            container.innerHTML = `<p>No questions found associated with this test.</p>`;
+            return;
+        }
+
+        testQuestions.forEach((q, index) => {
+            const block = document.createElement("div");
+            block.className = "question-block";
+            
+            let optionsHtml = "";
+            if (q.options) {
+                for (const [key, value] of Object.entries(q.options)) {
+                    optionsHtml += `
+                        <label class="option-label">
+                            <input type="radio" name="question_${q.id}" value="${key}" required>
+                            <strong>${key}.</strong> ${value}
+                        </label>
+                    `;
+                }
+            }
+
+            block.innerHTML = `
+                <div class="question-title">Q${index + 1}. ${q.question}</div>
+                <div>${optionsHtml}</div>
+            `;
+            container.appendChild(block);
+        });
+    }
+
+    function startTimer(durationInSeconds) {
+        let timer = durationInSeconds;
+        const display = document.getElementById("timerDisplay");
+
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            let minutes = parseInt(timer / 60, 10);
+            let seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = `Time Left: ${minutes}:${seconds}`;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                alert("Time's up! Submitting your test automatically.");
+                document.getElementById("testForm").requestSubmit();
+            }
+        }, 1000);
+    }
+
+    function submitTest(event) {
+        event.preventDefault();
+        clearInterval(timerInterval);
+
+        let testQuestions = [];
+        if (currentActiveTest.questionIds && currentActiveTest.questionIds.length > 0) {
+            testQuestions = currentModuleQuestions.filter(q => currentActiveTest.questionIds.includes(q.id));
+        } else {
+            testQuestions = currentModuleQuestions;
+        }
+
+        let score = 0;
+        const total = testQuestions.length;
+        const detailedQuestions = [];
+
+        testQuestions.forEach(q => {
+            const selectedOption = document.querySelector(`input[name="question_${q.id}"]:checked`);
+            const selectedAnswerKey = selectedOption ? selectedOption.value : null;
+            const isCorrect = selectedAnswerKey === q.answer;
+
+            if (isCorrect) {
+                score++;
+            }
+
+            detailedQuestions.push({
+                questionId: q.id,
+                questionText: q.question,
+                options: q.options,
+                correctAnswer: q.answer,
+                selectedAnswer: selectedAnswerKey,
+                isCorrect: isCorrect
+            });
+        });
+
+        // Enriched metadata payload including Subject, Topic, Module, and Test attributes
+        const testResultRecord = {
+            resultId: Date.now(),
+            candidateName: currentCandidateName,
+            subjectId: selectedSubjectObj ? selectedSubjectObj.id : null,
+            subjectName: selectedSubjectObj ? selectedSubjectObj.name : "Unknown Subject",
+            topicId: selectedTopicObj ? selectedTopicObj.id : null,
+            topicName: selectedTopicObj ? selectedTopicObj.name : "Unknown Topic",
+            moduleId: selectedModuleObj ? selectedModuleObj.id : null,
+            moduleName: selectedModuleObj ? selectedModuleObj.name : "Unknown Module",
+            testId: currentActiveTest.id,
+            testName: currentActiveTest.name || currentActiveTest.title || "Untitled Test",
+            submittedAt: new Date().toISOString(),
+            score: score,
+            totalQuestions: total,
+            percentage: ((score / total) * 100).toFixed(2),
+            detailedQuestions: detailedQuestions
+        };
+
+        saveResultToDB(testResultRecord);
+
+        document.getElementById("testScreen").classList.add("hidden");
+        document.getElementById("resultScreen").classList.remove("hidden");
+
+        document.getElementById("resultCandidateName").textContent = `Candidate: ${currentCandidateName}`;
+        document.getElementById("scoreDisplay").textContent = `${score} / ${total}`;
+        document.getElementById("resultFeedback").textContent = score === total ? "Excellent work! Perfect score." : "Good effort! Review your answers below.";
+
+        renderDetailedReview(detailedQuestions);
+    }
+
+    function renderDetailedReview(detailedQuestions) {
+        const reviewContainer = document.getElementById("detailedReviewContainer");
+        reviewContainer.innerHTML = "<h3>Detailed Question Breakdown:</h3>";
+
+        detailedQuestions.forEach((item, index) => {
+            const reviewDiv = document.createElement("div");
+            reviewDiv.className = `review-item ${item.isCorrect ? 'correct' : 'incorrect'}`;
+
+            const selectedText = item.selectedAnswer ? `${item.selectedAnswer}. ${item.options[item.selectedAnswer]}` : "None Selected";
+            const correctText = `${item.correctAnswer}. ${item.options[item.correctAnswer]}`;
+
+            reviewDiv.innerHTML = `
+                <p><strong>Q${index + 1}:</strong> ${item.questionText}</p>
+                <p style="margin: 4px 0;"><strong>Your Answer:</strong> <span style="color: ${item.isCorrect ? 'var(--success-color)' : 'var(--danger-color)'};">${selectedText}</span></p>
+                <p style="margin: 4px 0;"><strong>Correct Answer:</strong> <span style="color: var(--success-color);">${correctText}</span></p>
+            `;
+            reviewContainer.appendChild(reviewDiv);
+        });
+    }
+
+    function resetToSelection() {
+        document.getElementById("resultScreen").classList.add("hidden");
+        document.getElementById("selectionScreen").classList.remove("hidden");
+        initSelectionScreen();
+    }
+
+    window.onload = initSelectionScreen;
+</script>
+
+</body>
+</html>
