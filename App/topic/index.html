@@ -59,15 +59,21 @@
             font-size: 0.95rem;
         }
 
+        .header-nav {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
         .btn {
             background-color: white;
             color: var(--primary);
             border: none;
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -76,6 +82,8 @@
         }
 
         .btn:hover { background-color: #f1f5f9; }
+        .btn-secondary { background-color: #4b5563; color: white; }
+        .btn-secondary:hover { background-color: #374151; }
         .btn-primary { background-color: var(--primary); color: white; }
         .btn-primary:hover { background-color: var(--primary-hover); }
         .btn-danger { background-color: var(--danger); color: white; }
@@ -212,7 +220,27 @@
             <h1>📑 Topic & Module Manager</h1>
             <p>Manage curriculum hierarchy, organize subjects, topics, and structured examination modules.</p>
         </div>
-        <a href="index.html" class="btn">← Back to Main Suite</a>
+        <div class="header-nav">
+            <!-- Test Folder Links -->
+            <a href="../test/builder.html" class="btn btn-secondary">Test Builder</a>
+            <a href="../test/master-test.html" class="btn btn-secondary">Master Test</a>
+            <a href="../test/test.html" class="btn btn-secondary">Take Test</a>
+            <a href="../test/result.html" class="btn btn-secondary">Results</a>
+            <a href="../test/test-manager.html" class="btn btn-secondary">Test Manager</a>
+            
+            <!-- Topic Folder Link -->
+            <a href="index.html" class="btn btn-secondary">Topics</a>
+            
+            <!-- Module Folder Link -->
+            <a href="../module/index.html" class="btn btn-secondary">Modules</a>
+            
+            <!-- Question Folder Links -->
+            <a href="../question/index.html" class="btn btn-secondary">Questions</a>
+            <a href="../question/analytics.html" class="btn btn-secondary">Analytics</a>
+            
+            <!-- Admin Folder Link -->
+            <a href="../admin/admin.html" class="btn btn-secondary">Admin</a>
+        </div>
     </div>
 
     <!-- Main Content Card -->

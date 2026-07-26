@@ -3,1067 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Multi-Level Analytics Dashboard - Test Series</title>
+    <title>Test Series - Advanced Analytics Dashboard</title>
+    <!-- Include Google Fonts & Stylesheets if required -->
     <style>
         :root {
-            --primary-color: #4f46e5;
+            --primary: #4f46e5;
             --primary-hover: #4338ca;
-            --bg-color: #f3f4f6;
+            --bg-main: #f8fafc;
             --card-bg: #ffffff;
-            --text-color: #1f2937;
-            --border-color: #e5e7eb;
-            --success-color: #10b981;
-            --danger-color: #ef4444;
-            --warning-color: #f59e0b;
-            --info-color: #3b82f6;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--bg-main);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
 
-        .container {
+        .dashboard-container {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 30px auto;
+            padding: 0 20px;
         }
 
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
+        /* Navigation Links Bar */
+        .site-nav-bar {
+            background: var(--card-bg);
+            padding: 15px 20px;
             border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 20px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        h1, h2, h3, h4 {
-            margin: 0 0 15px 0;
-        }
-
-        .btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.2s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn-secondary {
-            background-color: #6b7280;
-        }
-
-        .btn-secondary:hover {
-            background-color: #4b5563;
-        }
-
-        /* Tabs Styling */
-        .tabs-nav {
+            margin-bottom: 25px;
             display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
             flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .tab-btn {
-            background: #e2e8f0;
-            color: #475569;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .tab-btn.active {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 16px;
-            text-align: center;
-        }
-
-        .stat-card h4 {
-            margin: 0 0 8px 0;
-            color: #64748b;
+        .site-nav-bar .nav-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
             font-size: 0.9rem;
         }
 
-        .stat-card .value {
-            font-size: 1.6rem;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-
-        .filter-group-bar {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            background: #f8fafc;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            align-items: center;
-        }
-
-        .filter-group-bar select, .filter-group-bar input {
-            padding: 8px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 0.95rem;
-            flex: 1;
-            min-width: 180px;
-            background: white;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            text-align: left;
-        }
-
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.95rem;
-        }
-
-        th {
-            background-color: #f8fafc;
-            font-weight: 600;
-        }
-
-        tr:hover {
-            background-color: #f9fafb;
-        }
-
-        .badge {
-            padding: 4px 8px;
+        .site-nav-bar a {
+            text-decoration: none;
+            color: var(--primary);
+            padding: 5px 10px;
             border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            background: #eef2ff;
+            transition: background 0.2s;
         }
 
-        .badge-success { background: #d1fae5; color: #065f46; }
-        .badge-danger { background: #fee2e2; color: #991b1b; }
-        .badge-info { background: #e0f2fe; color: #0369a1; }
+        .site-nav-bar a:hover {
+            background: #e0e7ff;
+        }
 
-        .top-banner {
-            background: linear-gradient(135deg, #4f46e5, #4338ca);
-            color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
+        .cloud-sync-panel {
             display: flex;
-            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Modal Overlay for Password Protection */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
             align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 320px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .modal-card h3 { margin-top: 0; font-size: 1.2rem; }
+        .modal-card input {
+            width: 100%;
+            padding: 8px;
+            margin: 12px 0;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- Top Global Analytics & Banner -->
-    <div class="top-banner">
-        <div>
-            <h1>Advanced Multi-Level Analytics Dashboard</h1>
-            <p style="margin: 0; opacity: 0.9;">Granular performance breakdown: Global, Subject, Topic, Module, and Test metrics.</p>
-        </div>
-        <a href="index.html" class="btn btn-secondary">Back to Question Manager</a>
-    </div>
+<div class="dashboard-container">
 
-    <!-- Navigation Tabs for Analytics Levels -->
-    <div class="tabs-nav">
-        <button class="tab-btn active" onclick="switchTab('global')">🌐 Global Analytics</button>
-        <button class="tab-btn" onclick="switchTab('subject')">📚 Subject Wise</button>
-        <button class="tab-btn" onclick="switchTab('topic')">📑 Topic Wise</button>
-        <button class="tab-btn" onclick="switchTab('module')">📦 Module Wise</button>
-        <button class="tab-btn" onclick="switchTab('test')">📝 Test Wise</button>
-    </div>
+    <!-- Folder-Based Architecture Navigation Bar -->
+    <div class="site-nav-bar">
+        <div class="nav-group">
+            <strong>📁 Folders:</strong>
+            <span style="color:var(--text-muted);">Test:</span>
+            <a href="../test/builder.html">Builder</a>
+            <a href="../test/master-test.html">Master Test</a>
+            <a href="../test/result.html">Result</a>
+            <a href="../test/test.html">Test</a>
+            <a href="../test/test-manager.html">Test Manager</a>
+            
+            <span style="color:var(--text-muted); margin-left: 10px;">Topic:</span>
+            <a href="../topic/index.html">Topic Index</a>
 
-    <!-- TAB 1: GLOBAL ANALYTICS -->
-    <div id="tab-global" class="tab-content active">
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h4>Total Submissions</h4>
-                <div class="value" id="gTotalSubmissions">0</div>
-            </div>
-            <div class="stat-card">
-                <h4>Global Average Score</h4>
-                <div class="value" id="gAvgScore">0%</div>
-            </div>
-            <div class="stat-card">
-                <h4>Highest Score Ever</h4>
-                <div class="value" id="gHighestScore">0%</div>
-            </div>
-            <div class="stat-card">
-                <h4>Active Candidates</h4>
-                <div class="value" id="gTotalCandidates">0</div>
-            </div>
+            <span style="color:var(--text-muted); margin-left: 10px;">Admin:</span>
+            <a href="../admin/admin.html">Admin Panel</a>
+
+            <span style="color:var(--text-muted); margin-left: 10px;">Module:</span>
+            <a href="../module/index.html">Module Index</a>
+
+            <span style="color:var(--text-muted); margin-left: 10px;">Question:</span>
+            <a href="../question/index.html">Questions</a>
+            <a href="../question/analytics.html" style="background:#4338ca; color:white;">Analytics</a>
         </div>
 
-        <div class="card">
-            <h2>🏆 Global Leaderboard (Top Performers)</h2>
-            <div style="overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Candidate Name</th>
-                            <th>Tests Taken</th>
-                            <th>Average Percentage</th>
-                            <th>Best Score</th>
-                        </tr>
-                    </thead>
-                    <tbody id="globalLeaderboardBody">
-                        <!-- Populated dynamically -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>📊 Complete Global Attempt History</h2>
-            <div class="filter-group-bar">
-                <input type="text" id="globalSearchInput" placeholder="Search candidate or test..." oninput="filterGlobalLogs()">
-                <select id="globalStatusFilter" onchange="filterGlobalLogs()">
-                    <option value="">All Statuses</option>
-                    <option value="pass">Passed (>= 50%)</option>
-                    <option value="fail">Needs Practice (< 50%)</option>
-                </select>
-            </div>
-            <div style="overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date & Time</th>
-                            <th>Candidate</th>
-                            <th>Subject / Topic</th>
-                            <th>Test Name</th>
-                            <th>Score</th>
-                            <th>Percentage</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="globalLogsBody">
-                        <!-- Populated dynamically -->
-                    </tbody>
-                </table>
-            </div>
+        <!-- Cloud Backup & Restore Trigger -->
+        <div class="cloud-sync-panel">
+            <button class="btn" onclick="openCloudAuthModal('backup')">☁️ Cloud Backup</button>
+            <button class="btn btn-danger" onclick="openCloudAuthModal('restore')">📥 Cloud Restore</button>
         </div>
     </div>
 
-    <!-- TAB 2: SUBJECT WISE ANALYTICS -->
-    <div id="tab-subject" class="tab-content">
-        <div class="card">
-            <h2>📚 Subject-Wise Breakdown</h2>
-            <div class="filter-group-bar">
-                <select id="subjectFilterSelect" onchange="renderSubjectAnalytics()">
-                    <option value="">-- Select Subject --</option>
-                </select>
-            </div>
-            <div class="stats-grid" style="margin-top: 15px;">
-                <div class="stat-card">
-                    <h4>Total Subject Attempts</h4>
-                    <div class="value" id="subTotalAttempts">0</div>
-                </div>
-                <div class="stat-card">
-                    <h4>Subject Average Score</h4>
-                    <div class="value" id="subAvgScore">0%</div>
-                </div>
-                <div class="stat-card">
-                    <h4>Unique Candidates</h4>
-                    <div class="value" id="subCandidatesCount">0</div>
-                </div>
-            </div>
-            <div style="overflow-x: auto; margin-top: 20px;">
-                <h3>Attempts in Selected Subject</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Candidate Name</th>
-                            <th>Topic Name</th>
-                            <th>Module Name</th>
-                            <th>Test Name</th>
-                            <th>Score</th>
-                            <th>Percentage</th>
-                        </tr>
-                    </thead>
-                    <tbody id="subjectLogsBody">
-                        <tr><td colspan="6" style="text-align: center; color: #64748b;">Please select a subject above.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    <!-- Dashboard Content Placeholder (Tabs & Tables go here) -->
+    <h1>Analytics Dashboard & Management Suite</h1>
+    <p>Monitor global leaderboards, view detailed subject breakdowns, and backup/restore data safely via Firebase Cloud Firestore.</p>
 
-    <!-- TAB 3: TOPIC WISE ANALYTICS -->
-    <div id="tab-topic" class="tab-content">
-        <div class="card">
-            <h2>📑 Topic-Wise Breakdown</h2>
-            <div class="filter-group-bar">
-                <select id="topicSubjectSelect" onchange="populateTopicDropdown()">
-                    <option value="">-- Select Subject First --</option>
-                </select>
-                <select id="topicFilterSelect" onchange="renderTopicAnalytics()" disabled>
-                    <option value="">-- Select Topic --</option>
-                </select>
-            </div>
-            <div class="stats-grid" style="margin-top: 15px;">
-                <div class="stat-card">
-                    <h4>Total Topic Attempts</h4>
-                    <div class="value" id="topicTotalAttempts">0</div>
-                </div>
-                <div class="stat-card">
-                    <h4>Topic Average Score</h4>
-                    <div class="value" id="topicAvgScore">0%</div>
-                </div>
-            </div>
-            <div style="overflow-x: auto; margin-top: 20px;">
-                <h3>Attempts in Selected Topic</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Candidate Name</th>
-                            <th>Module Name</th>
-                            <th>Test Name</th>
-                            <th>Score</th>
-                            <th>Percentage</th>
-                        </tr>
-                    </thead>
-                    <tbody id="topicLogsBody">
-                        <tr><td colspan="5" style="text-align: center; color: #64748b;">Please select a subject and topic above.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+</div>
 
-    <!-- TAB 4: MODULE WISE ANALYTICS -->
-    <div id="tab-module" class="tab-content">
-        <div class="card">
-            <h2>📦 Module-Wise Breakdown</h2>
-            <div class="filter-group-bar">
-                <select id="modSubjectSelect" onchange="populateModTopicDropdown()">
-                    <option value="">-- Select Subject --</option>
-                </select>
-                <select id="modTopicSelect" onchange="populateModModuleDropdown()" disabled>
-                    <option value="">-- Select Topic --</option>
-                </select>
-                <select id="modModuleSelect" onchange="renderModuleAnalytics()" disabled>
-                    <option value="">-- Select Module --</option>
-                </select>
-            </div>
-            <div class="stats-grid" style="margin-top: 15px;">
-                <div class="stat-card">
-                    <h4>Total Module Attempts</h4>
-                    <div class="value" id="modTotalAttempts">0</div>
-                </div>
-                <div class="stat-card">
-                    <h4>Module Average Score</h4>
-                    <div class="value" id="modAvgScore">0%</div>
-                </div>
-            </div>
-            <div style="overflow-x: auto; margin-top: 20px;">
-                <h3>Attempts in Selected Module</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Candidate Name</th>
-                            <th>Test Name</th>
-                            <th>Score</th>
-                            <th>Percentage</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="moduleLogsBody">
-                        <tr><td colspan="5" style="text-align: center; color: #64748b;">Please select Subject, Topic, and Module.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 5: TEST WISE ANALYTICS -->
-    <div id="tab-test" class="tab-content">
-        <div class="card">
-            <h2>📝 Test-Wise Breakdown & Leaderboards</h2>
-            <div class="filter-group-bar">
-                <select id="testSubjectSelect" onchange="populateTestTopicDropdown()">
-                    <option value="">-- Select Subject --</option>
-                </select>
-                <select id="testTopicSelect" onchange="populateTestModuleDropdown()" disabled>
-                    <option value="">-- Select Topic --</option>
-                </select>
-                <select id="testModuleSelect" onchange="populateTestDropdown()" disabled>
-                    <option value="">-- Select Module --</option>
-                </select>
-                <select id="testFilterSelect" onchange="renderTestAnalytics()" disabled>
-                    <option value="">-- Select Test --</option>
-                </select>
-            </div>
-            <div class="stats-grid" style="margin-top: 15px;">
-                <div class="stat-card">
-                    <h4>Total Test Takers</h4>
-                    <div class="value" id="testTotalAttempts">0</div>
-                </div>
-                <div class="stat-card">
-                    <h4>Test Average Score</h4>
-                    <div class="value" id="testAvgScore">0%</div>
-                </div>
-                <div class="stat-card">
-                    <h4>Highest Test Score</h4>
-                    <div class="value" id="testHighestScore">0%</div>
-                </div>
-            </div>
-            <div style="overflow-x: auto; margin-top: 20px;">
-                <h3>Test-Specific Leaderboard</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Candidate Name</th>
-                            <th>Score</th>
-                            <th>Percentage</th>
-                            <th>Submitted Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="testLeaderboardBody">
-                        <tr><td colspan="5" style="text-align: center; color: #64748b;">Please select a specific test above.</td></tr>
-                    </tbody>
-                </table>
-            </div>
+<!-- Password Protection Modal -->
+<div id="cloudAuthModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3 id="modalTitle">Security Verification</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Enter master administrator password to proceed.</p>
+        <input type="password" id="cloudPasswordInput" placeholder="Enter password...">
+        <div class="modal-actions">
+            <button class="btn" style="background: #cbd5e1; color: #334155;" onclick="closeCloudAuthModal()">Cancel</button>
+            <button class="btn" onclick="verifyAndExecuteCloudAction()">Authorize</button>
         </div>
     </div>
 </div>
 
-<script>
-    const RESULTS_DB_KEY = "testSeriesResultsDB";
-    const DB_KEY = "testSeriesDB";
+<!-- Firebase SDK Imports (Modular v10) -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Seed dummy evaluation results if none exist so the dashboard is immediately populated and testable
-    function seedDummyResultsIfNeeded() {
-        if (!localStorage.getItem(RESULTS_DB_KEY)) {
-            const dummyResults = [
-                {
-                    id: 1,
-                    candidateName: "Rahul Sharma",
-                    subjectId: 101,
-                    subjectName: "Marathi",
-                    topicId: 201,
-                    topicName: "Marathi Grammar",
-                    moduleId: 301,
-                    moduleName: "Vyakaran (व्याकरण)",
-                    testId: 9001,
-                    testName: "Vyakaran Test 1",
-                    score: 3,
-                    totalQuestions: 3,
-                    percentage: 100,
-                    submittedAt: new Date(Date.now() - 3600000 * 5).toISOString()
-                },
-                {
-                    id: 2,
-                    candidateName: "Priya Patil",
-                    subjectId: 101,
-                    subjectName: "Marathi",
-                    topicId: 201,
-                    topicName: "Marathi Grammar",
-                    moduleId: 301,
-                    moduleName: "Vyakaran (व्याकरण)",
-                    testId: 9001,
-                    testName: "Vyakaran Test 1",
-                    score: 2,
-                    totalQuestions: 3,
-                    percentage: 67,
-                    submittedAt: new Date(Date.now() - 3600000 * 2).toISOString()
-                },
-                {
-                    id: 3,
-                    candidateName: "Amit Deshmukh",
-                    subjectId: 101,
-                    subjectName: "Marathi",
-                    topicId: 201,
-                    topicName: "Marathi Grammar",
-                    moduleId: 302,
-                    moduleName: "Sahitya (साहित्य)",
-                    testId: 9101,
-                    testName: "Sahitya Test 1",
-                    score: 1,
-                    totalQuestions: 3,
-                    percentage: 33,
-                    submittedAt: new Date(Date.now() - 3600000 * 1).toISOString()
-                }
-            ];
-            localStorage.setItem(RESULTS_DB_KEY, JSON.stringify(dummyResults));
-        }
-    }
+    const firebaseConfig = {
+        apiKey: "AIzaSyCSwr1mbjcFhjeWCoZIipb5TE3o0jLkU7M",
+        authDomain: "quiz-43b3e.firebaseapp.com",
+        projectId: "quiz-43b3e",
+        storageBucket: "quiz-43b3e.appspot.com",
+        messagingSenderId: "477037762591",
+        appId: "1:477037762591:web:03478c214a0477ff819d2a"
+    };
 
-    function getResultsDB() {
-        seedDummyResultsIfNeeded();
-        const results = localStorage.getItem(RESULTS_DB_KEY);
-        if (!results) return [];
-        try { return JSON.parse(results); } catch (e) { return []; }
-    }
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    function getDB() {
-        const db = localStorage.getItem(DB_KEY);
-        if (!db) return { subjects: [] };
-        try { return JSON.parse(db); } catch (e) { return { subjects: [] }; }
-    }
+    const MASTER_PASSWORD = "AdminSecurePassword123"; // Hardcoded backup/restore password
+    const DB_KEY = "quiz_app_database";
+    const RESULTS_DB_KEY = "quiz_app_results";
 
-    function switchTab(tabId) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    let pendingAction = null;
 
-        document.getElementById(`tab-${tabId}`).classList.add('active');
-        event.currentTarget.classList.add('active');
-    }
+    window.openCloudAuthModal = function(actionType) {
+        pendingAction = actionType;
+        document.getElementById("modalTitle").textContent = actionType === 'backup' ? "Cloud Backup Authentication" : "Cloud Restore Authentication";
+        document.getElementById("cloudPasswordInput").value = "";
+        document.getElementById("cloudAuthModal").style.display = "flex";
+    };
 
-    function initDashboard() {
-        initGlobalAnalytics();
-        initSubjectTabDropdowns();
-        initTopicTabDropdowns();
-        initModuleTabDropdowns();
-        initTestTabDropdowns();
-    }
+    window.closeCloudAuthModal = function() {
+        document.getElementById("cloudAuthModal").style.display = "none";
+        pendingAction = null;
+    };
 
-    /* --- GLOBAL ANALYTICS --- */
-    function initGlobalAnalytics() {
-        const results = getResultsDB();
-        document.getElementById("gTotalSubmissions").textContent = results.length;
-
-        if (results.length > 0) {
-            const sum = results.reduce((acc, r) => acc + Number(r.percentage), 0);
-            document.getElementById("gAvgScore").textContent = (sum / results.length).toFixed(1) + "%";
-            document.getElementById("gHighestScore").textContent = Math.max(...results.map(r => Number(r.percentage))) + "%";
-            const unique = new Set(results.map(r => r.candidateName.toLowerCase().trim()));
-            document.getElementById("gTotalCandidates").textContent = unique.size;
-        } else {
-            document.getElementById("gAvgScore").textContent = "0%";
-            document.getElementById("gHighestScore").textContent = "0%";
-            document.getElementById("gTotalCandidates").textContent = "0";
-        }
-
-        renderGlobalLeaderboard(results);
-        renderGlobalLogsTable(results);
-    }
-
-    function renderGlobalLeaderboard(results) {
-        const tbody = document.getElementById("globalLeaderboardBody");
-        tbody.innerHTML = "";
-        if (results.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">No test submissions recorded yet.</td></tr>`;
+    window.verifyAndExecuteCloudAction = async function() {
+        const enteredPass = document.getElementById("cloudPasswordInput").value;
+        if (enteredPass !== MASTER_PASSWORD) {
+            alert("❌ Incorrect password authorization failed!");
             return;
         }
 
-        const candidateMap = {};
-        results.forEach(r => {
-            const name = r.candidateName.trim();
-            if (!candidateMap[name]) {
-                candidateMap[name] = { name, testsTaken: 0, totalPct: 0, bestPct: 0 };
+        const action = pendingAction;
+        closeCloudAuthModal();
+
+        if (action === 'backup') {
+            await performCloudBackup(db);
+        } else if (action === 'restore') {
+            await performCloudRestore(db);
+        }
+    };
+
+    async function performCloudBackup(database) {
+        try {
+            const localDB = localStorage.getItem(DB_KEY) || "{}";
+            const localResults = localStorage.getItem(RESULTS_DB_KEY) || "[]";
+
+            const payload = {
+                appData: JSON.parse(localDB),
+                resultsData: JSON.parse(localResults),
+                updatedAt: new Date().toISOString()
+            };
+
+            await setDoc(doc(database, "backups", "main_cluster"), payload);
+            alert("✅ Cloud Backup Successful! Data synchronized to Firestore.");
+        } catch (error) {
+            console.error("Backup error:", error);
+            alert("❌ Backup Failed: " + error.message);
+        }
+    }
+
+    async function performCloudRestore(database) {
+        try {
+            const docRef = doc(database, "backups", "main_cluster");
+            const docSnap = await getDoc(docRef);
+
+            if (!docSnap.exists()) {
+                alert("⚠️ No backup cluster found in Firebase.");
+                return;
             }
-            candidateMap[name].testsTaken += 1;
-            candidateMap[name].totalPct += Number(r.percentage);
-            if (Number(r.percentage) > candidateMap[name].bestPct) {
-                candidateMap[name].bestPct = Number(r.percentage);
-            }
-        });
 
-        const arr = Object.values(candidateMap).map(c => ({
-            ...c,
-            avgPct: (c.totalPct / c.testsTaken).toFixed(2)
-        }));
+            const data = docSnap.data();
+            localStorage.setItem(DB_KEY, JSON.stringify(data.appData || {}));
+            localStorage.setItem(RESULTS_DB_KEY, JSON.stringify(data.resultsData || []));
 
-        arr.sort((a, b) => b.avgPct - a.avgPct || b.bestPct - a.bestPct);
-
-        arr.forEach((c, index) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td><strong>#${index + 1}</strong></td>
-                <td>${c.name}</td>
-                <td>${c.testsTaken}</td>
-                <td><strong>${c.avgPct}%</strong></td>
-                <td><span class="badge badge-success">${c.bestPct}%</span></td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
-
-    function renderGlobalLogsTable(resultsToRender) {
-        const tbody = document.getElementById("globalLogsBody");
-        tbody.innerHTML = "";
-        if (resultsToRender.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #64748b;">No matching logs found.</td></tr>`;
-            return;
-        }
-
-        const sorted = [...resultsToRender].sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
-        sorted.forEach(r => {
-            const dateStr = new Date(r.submittedAt).toLocaleString();
-            const isPass = Number(r.percentage) >= 50;
-            const subTopicText = `${r.subjectName || 'Subject'} > ${r.topicName || 'Topic'}`;
-
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${dateStr}</td>
-                <td><strong>${r.candidateName}</strong></td>
-                <td><span style="font-size: 0.85rem; color: #475569;">${subTopicText}</span></td>
-                <td>${r.testName}</td>
-                <td>${r.score} / ${r.totalQuestions}</td>
-                <td>${r.percentage}%</td>
-                <td><span class="badge ${isPass ? 'badge-success' : 'badge-danger'}">${isPass ? 'Passed' : 'Needs Practice'}</span></td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
-
-    function filterGlobalLogs() {
-        const results = getResultsDB();
-        const query = document.getElementById("globalSearchInput").value.toLowerCase().trim();
-        const status = document.getElementById("globalStatusFilter").value;
-
-        const filtered = results.filter(r => {
-            const matchesQuery = r.candidateName.toLowerCase().includes(query) || r.testName.toLowerCase().includes(query);
-            const isPass = Number(r.percentage) >= 50;
-            let matchesStatus = true;
-            if (status === "pass") matchesStatus = isPass;
-            if (status === "fail") matchesStatus = !isPass;
-            return matchesQuery && matchesStatus;
-        });
-
-        renderGlobalLogsTable(filtered);
-    }
-
-    /* --- SUBJECT WISE TAB --- */
-    function initSubjectTabDropdowns() {
-        const db = getDB();
-        const select = document.getElementById("subjectFilterSelect");
-        select.innerHTML = `<option value="">-- Select Subject --</option>`;
-        db.subjects.forEach(s => {
-            const opt = document.createElement("option");
-            opt.value = s.id;
-            opt.textContent = s.name;
-            select.appendChild(opt);
-        });
-    }
-
-    function renderSubjectAnalytics() {
-        const subjectId = Number(document.getElementById("subjectFilterSelect").value);
-        const results = getResultsDB();
-        const tbody = document.getElementById("subjectLogsBody");
-
-        if (!subjectId) {
-            document.getElementById("subTotalAttempts").textContent = "0";
-            document.getElementById("subAvgScore").textContent = "0%";
-            document.getElementById("subCandidatesCount").textContent = "0";
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #64748b;">Please select a subject above.</td></tr>`;
-            return;
-        }
-
-        const filtered = results.filter(r => Number(r.subjectId) === subjectId);
-        document.getElementById("subTotalAttempts").textContent = filtered.length;
-
-        if (filtered.length > 0) {
-            const sum = filtered.reduce((acc, r) => acc + Number(r.percentage), 0);
-            document.getElementById("subAvgScore").textContent = (sum / filtered.length).toFixed(1) + "%";
-            const unique = new Set(filtered.map(r => r.candidateName.toLowerCase().trim()));
-            document.getElementById("subCandidatesCount").textContent = unique.size;
-        } else {
-            document.getElementById("subAvgScore").textContent = "0%";
-            document.getElementById("subCandidatesCount").textContent = "0";
-        }
-
-        tbody.innerHTML = "";
-        if (filtered.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #64748b;">No attempts recorded for this subject.</td></tr>`;
-            return;
-        }
-
-        filtered.forEach(r => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td><strong>${r.candidateName}</strong></td>
-                <td>${r.topicName || 'N/A'}</td>
-                <td>${r.moduleName || 'N/A'}</td>
-                <td>${r.testName}</td>
-                <td>${r.score} / ${r.totalQuestions}</td>
-                <td><strong>${r.percentage}%</strong></td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
-
-    /* --- TOPIC WISE TAB --- */
-    function initTopicTabDropdowns() {
-        const db = getDB();
-        const select = document.getElementById("topicSubjectSelect");
-        select.innerHTML = `<option value="">-- Select Subject First --</option>`;
-        db.subjects.forEach(s => {
-            const opt = document.createElement("option");
-            opt.value = s.id;
-            opt.textContent = s.name;
-            select.appendChild(opt);
-        });
-    }
-
-    function populateTopicDropdown() {
-        const subjectId = Number(document.getElementById("topicSubjectSelect").value);
-        const topicSelect = document.getElementById("topicFilterSelect");
-        topicSelect.innerHTML = `<option value="">-- Select Topic --</option>`;
-        topicSelect.disabled = true;
-
-        document.getElementById("topicTotalAttempts").textContent = "0";
-        document.getElementById("topicAvgScore").textContent = "0%";
-        document.getElementById("topicLogsBody").innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">Please select a topic.</td></tr>`;
-
-        if (!subjectId) return;
-
-        const db = getDB();
-        const sub = db.subjects.find(s => s.id === subjectId);
-        if (sub && sub.topics) {
-            sub.topics.forEach(t => {
-                const opt = document.createElement("option");
-                opt.value = t.id;
-                opt.textContent = t.name;
-                topicSelect.appendChild(opt);
-            });
-            topicSelect.disabled = false;
+            alert("📥 Cloud Restore Successful! LocalStorage updated. Reloading page...");
+            window.location.reload();
+        } catch (error) {
+            console.error("Restore error:", error);
+            alert("❌ Restore Failed: " + error.message);
         }
     }
-
-    function renderTopicAnalytics() {
-        const topicId = Number(document.getElementById("topicFilterSelect").value);
-        const results = getResultsDB();
-        const tbody = document.getElementById("topicLogsBody");
-
-        if (!topicId) {
-            document.getElementById("topicTotalAttempts").textContent = "0";
-            document.getElementById("topicAvgScore").textContent = "0%";
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">Please select a topic.</td></tr>`;
-            return;
-        }
-
-        const filtered = results.filter(r => Number(r.topicId) === topicId);
-        document.getElementById("topicTotalAttempts").textContent = filtered.length;
-
-        if (filtered.length > 0) {
-            const sum = filtered.reduce((acc, r) => acc + Number(r.percentage), 0);
-            document.getElementById("topicAvgScore").textContent = (sum / filtered.length).toFixed(1) + "%";
-        } else {
-            document.getElementById("topicAvgScore").textContent = "0%";
-        }
-
-        tbody.innerHTML = "";
-        if (filtered.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">No attempts recorded for this topic.</td></tr>`;
-            return;
-        }
-
-        filtered.forEach(r => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td><strong>${r.candidateName}</strong></td>
-                <td>${r.moduleName || 'N/A'}</td>
-                <td>${r.testName}</td>
-                <td>${r.score} / ${r.totalQuestions}</td>
-                <td><strong>${r.percentage}%</strong></td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
-
-    /* --- MODULE WISE TAB --- */
-    function initModuleTabDropdowns() {
-        const db = getDB();
-        const select = document.getElementById("modSubjectSelect");
-        select.innerHTML = `<option value="">-- Select Subject --</option>`;
-        db.subjects.forEach(s => {
-            const opt = document.createElement("option");
-            opt.value = s.id;
-            opt.textContent = s.name;
-            select.appendChild(opt);
-        });
-    }
-
-    function populateModTopicDropdown() {
-        const subjectId = Number(document.getElementById("modSubjectSelect").value);
-        const topicSelect = document.getElementById("modTopicSelect");
-        const moduleSelect = document.getElementById("modModuleSelect");
-
-        topicSelect.innerHTML = `<option value="">-- Select Topic --</option>`;
-        moduleSelect.innerHTML = `<option value="">-- Select Module --</option>`;
-        topicSelect.disabled = true;
-        moduleSelect.disabled = true;
-
-        document.getElementById("modTotalAttempts").textContent = "0";
-        document.getElementById("modAvgScore").textContent = "0%";
-        document.getElementById("moduleLogsBody").innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">Please select Subject, Topic, and Module.</td></tr>`;
-
-        if (!subjectId) return;
-
-        const db = getDB();
-        const sub = db.subjects.find(s => s.id === subjectId);
-        if (sub && sub.topics) {
-            sub.topics.forEach(t => {
-                const opt = document.createElement("option");
-                opt.value = t.id;
-                opt.textContent = t.name;
-                topicSelect.appendChild(opt);
-            });
-            topicSelect.disabled = false;
-        }
-    }
-
-    function populateModModuleDropdown() {
-        const subjectId = Number(document.getElementById("modSubjectSelect").value);
-        const topicId = Number(document.getElementById("modTopicSelect").value);
-        const moduleSelect = document.getElementById("modModuleSelect");
-
-        moduleSelect.innerHTML = `<option value="">-- Select Module --</option>`;
-        moduleSelect.disabled = true;
-
-        if (!topicId) return;
-
-        const db = getDB();
-        const sub = db.subjects.find(s => s.id === subjectId);
-        const topic = sub ? sub.topics.find(t => t.id === topicId) : null;
-        if (topic && topic.modules) {
-            topic.modules.forEach(m => {
-                const opt = document.createElement("option");
-                opt.value = m.id;
-                opt.textContent = m.name;
-                moduleSelect.appendChild(opt);
-            });
-            moduleSelect.disabled = false;
-        }
-    }
-
-    function renderModuleAnalytics() {
-        const moduleId = Number(document.getElementById("modModuleSelect").value);
-        const results = getResultsDB();
-        const tbody = document.getElementById("moduleLogsBody");
-
-        if (!moduleId) {
-            document.getElementById("modTotalAttempts").textContent = "0";
-            document.getElementById("modAvgScore").textContent = "0%";
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">Please select a module.</td></tr>`;
-            return;
-        }
-
-        const filtered = results.filter(r => Number(r.moduleId) === moduleId);
-        document.getElementById("modTotalAttempts").textContent = filtered.length;
-
-        if (filtered.length > 0) {
-            const sum = filtered.reduce((acc, r) => acc + Number(r.percentage), 0);
-            document.getElementById("modAvgScore").textContent = (sum / filtered.length).toFixed(1) + "%";
-        } else {
-            document.getElementById("modAvgScore").textContent = "0%";
-        }
-
-        tbody.innerHTML = "";
-        if (filtered.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">No attempts recorded for this module.</td></tr>`;
-            return;
-        }
-
-        filtered.forEach(r => {
-            const isPass = Number(r.percentage) >= 50;
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td><strong>${r.candidateName}</strong></td>
-                <td>${r.testName}</td>
-                <td>${r.score} / ${r.totalQuestions}</td>
-                <td>${r.percentage}%</td>
-                <td><span class="badge ${isPass ? 'badge-success' : 'badge-danger'}">${isPass ? 'Passed' : 'Needs Practice'}</span></td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
-
-    /* --- TEST WISE TAB --- */
-    function initTestTabDropdowns() {
-        const db = getDB();
-        const select = document.getElementById("testSubjectSelect");
-        select.innerHTML = `<option value="">-- Select Subject --</option>`;
-        db.subjects.forEach(s => {
-            const opt = document.createElement("option");
-            opt.value = s.id;
-            opt.textContent = s.name;
-            select.appendChild(opt);
-        });
-    }
-
-    function populateTestTopicDropdown() {
-        const subjectId = Number(document.getElementById("testSubjectSelect").value);
-        const topicSelect = document.getElementById("testTopicSelect");
-        const moduleSelect = document.getElementById("testModuleSelect");
-        const testSelect = document.getElementById("testFilterSelect");
-
-        topicSelect.innerHTML = `<option value="">-- Select Topic --</option>`;
-        moduleSelect.innerHTML = `<option value="">-- Select Module --</option>`;
-        testSelect.innerHTML = `<option value="">-- Select Test --</option>`;
-        topicSelect.disabled = true;
-        moduleSelect.disabled = true;
-        testSelect.disabled = true;
-
-        document.getElementById("testTotalAttempts").textContent = "0";
-        document.getElementById("testAvgScore").textContent = "0%";
-        document.getElementById("testHighestScore").textContent = "0%";
-        document.getElementById("testLeaderboardBody").innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">Please select Subject, Topic, Module, and Test.</td></tr>`;
-
-        if (!subjectId) return;
-
-        const db = getDB();
-        const sub = db.subjects.find(s => s.id === subjectId);
-        if (sub && sub.topics) {
-            sub.topics.forEach(t => {
-                const opt = document.createElement("option");
-                opt.value = t.id;
-                opt.textContent = t.name;
-                topicSelect.appendChild(opt);
-            });
-            topicSelect.disabled = false;
-        }
-    }
-
-    function populateTestModuleDropdown() {
-        const subjectId = Number(document.getElementById("testSubjectSelect").value);
-        const topicId = Number(document.getElementById("testTopicSelect").value);
-        const moduleSelect = document.getElementById("testModuleSelect");
-        const testSelect = document.getElementById("testFilterSelect");
-
-        moduleSelect.innerHTML = `<option value="">-- Select Module --</option>`;
-        testSelect.innerHTML = `<option value="">-- Select Test --</option>`;
-        moduleSelect.disabled = true;
-        testSelect.disabled = true;
-
-        if (!topicId) return;
-
-        const db = getDB();
-        const sub = db.subjects.find(s => s.id === subjectId);
-        const topic = sub ? sub.topics.find(t => t.id === topicId) : null;
-        if (topic && topic.modules) {
-            topic.modules.forEach(m => {
-                const opt = document.createElement("option");
-                opt.value = m.id;
-                opt.textContent = m.name;
-                moduleSelect.appendChild(opt);
-            });
-            moduleSelect.disabled = false;
-        }
-    }
-
-    function populateTestDropdown() {
-        const subjectId = Number(document.getElementById("testSubjectSelect").value);
-        const topicId = Number(document.getElementById("testTopicSelect").value);
-        const moduleId = Number(document.getElementById("testModuleSelect").value);
-        const testSelect = document.getElementById("testFilterSelect");
-
-        testSelect.innerHTML = `<option value="">-- Select Test --</option>`;
-        testSelect.disabled = true;
-
-        if (!moduleId) return;
-
-        const db = getDB();
-        const sub = db.subjects.find(s => s.id === subjectId);
-        const topic = sub ? sub.topics.find(t => t.id === topicId) : null;
-        const mod = topic ? topic.modules.find(m => m.id === moduleId) : null;
-        if (mod && mod.tests) {
-            mod.tests.forEach(test => {
-                const opt = document.createElement("option");
-                opt.value = test.id;
-                opt.textContent = test.name || test.title || "Untitled Test";
-                testSelect.appendChild(opt);
-            });
-            testSelect.disabled = false;
-        }
-    }
-
-    function renderTestAnalytics() {
-        const testId = Number(document.getElementById("testFilterSelect").value);
-        const results = getResultsDB();
-        const tbody = document.getElementById("testLeaderboardBody");
-
-        if (!testId) {
-            document.getElementById("testTotalAttempts").textContent = "0";
-            document.getElementById("testAvgScore").textContent = "0%";
-            document.getElementById("testHighestScore").textContent = "0%";
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">Please select a specific test.</td></tr>`;
-            return;
-        }
-
-        const filtered = results.filter(r => Number(r.testId) === testId);
-        document.getElementById("testTotalAttempts").textContent = filtered.length;
-
-        if (filtered.length > 0) {
-            const sum = filtered.reduce((acc, r) => acc + Number(r.percentage), 0);
-            document.getElementById("testAvgScore").textContent = (sum / filtered.length).toFixed(1) + "%";
-            document.getElementById("testHighestScore").textContent = Math.max(...filtered.map(r => Number(r.percentage))) + "%";
-        } else {
-            document.getElementById("testAvgScore").textContent = "0%";
-            document.getElementById("testHighestScore").textContent = "0%";
-        }
-
-        tbody.innerHTML = "";
-        if (filtered.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">No submissions recorded for this test.</td></tr>`;
-            return;
-        }
-
-        const sorted = [...filtered].sort((a, b) => Number(b.percentage) - Number(a.percentage) || new Date(b.submittedAt) - new Date(b.submittedAt));
-
-        sorted.forEach((r, index) => {
-            const dateStr = new Date(r.submittedAt).toLocaleString();
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td><strong>#${index + 1}</strong></td>
-                <td>${r.candidateName}</td>
-                <td>${r.score} / ${r.totalQuestions}</td>
-                <td><span class="badge badge-success">${r.percentage}%</span></td>
-                <td><span style="font-size: 0.85rem; color: #475569;">${dateStr}</span></td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
-
-    window.onload = initDashboard;
 </script>
 
 </body>

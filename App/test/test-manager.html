@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tests Manager</title>
+    <link re="stylesheet" href="test_manager.css">
     <style>
         :root {
             --primary-color: #4f46e5;
@@ -34,6 +35,14 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
         }
 
         h1, h2 {
@@ -44,15 +53,27 @@
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 16px;
+            padding: 8px 12px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
             transition: background-color 0.2s;
+            font-size: 0.85rem;
         }
 
         .btn:hover {
             background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: #4b5563;
+        }
+
+        .btn-secondary:hover {
+            background-color: #374151;
         }
 
         .btn-danger {
@@ -135,7 +156,29 @@
 <div class="container">
     <header>
         <h1>Tests Manager</h1>
-        <button class="btn" onclick="initApp()">Refresh Data</button>
+        <div class="header-nav">
+            <!-- Test Folder Links -->
+            <a href="builder.html" class="btn btn-secondary">Test Builder</a>
+            <a href="master-test.html" class="btn btn-secondary">Master Test</a>
+            <a href="test.html" class="btn btn-secondary">Take Test</a>
+            <a href="result.html" class="btn btn-secondary">Results</a>
+            <a href="test-manager.html" class="btn btn-secondary">Test Manager</a>
+            
+            <!-- Topic Folder Link -->
+            <a href="../topic/index.html" class="btn btn-secondary">Topics</a>
+            
+            <!-- Module Folder Link -->
+            <a href="../module/index.html" class="btn btn-secondary">Modules</a>
+            
+            <!-- Question Folder Links -->
+            <a href="../question/index.html" class="btn btn-secondary">Questions</a>
+            <a href="../question/analytics.html" class="btn btn-secondary">Analytics</a>
+            
+            <!-- Admin Folder Link -->
+            <a href="../admin/admin.html" class="btn btn-secondary">Admin</a>
+            
+            <button class="btn" onclick="initApp()">Refresh</button>
+        </div>
     </header>
 
     <!-- Add Test Form Card -->
@@ -198,7 +241,6 @@
 <script>
     const DB_KEY = "testSeriesDB";
 
-    // Read directly from existing project localStorage database key
     function getDB() {
         const db = localStorage.getItem(DB_KEY);
         if (!db) {
@@ -218,7 +260,6 @@
         initApp();
     }
 
-    // Populate dropdown options for modules and render table based on current localStorage data
     function initApp() {
         const db = getDB();
         const moduleSelect = document.getElementById("moduleSelect");
@@ -235,13 +276,11 @@
                     subject.topics.forEach(topic => {
                         if (topic.modules && Array.isArray(topic.modules)) {
                             topic.modules.forEach(module => {
-                                // 1. Populate Module dropdown options
                                 const optionElem = document.createElement("option");
                                 optionElem.value = `${subject.id}_${topic.id}_${module.id}`;
                                 optionElem.textContent = `${subject.name} > ${topic.name} > ${module.name}`;
                                 moduleSelect.appendChild(optionElem);
 
-                                // 2. Render Tests inside table
                                 if (module.tests && Array.isArray(module.tests)) {
                                     module.tests.forEach(test => {
                                         allTestsCount++;
@@ -277,7 +316,6 @@
         }
     }
 
-    // Handle form submission to add a new test to the project's localStorage structure
     function handleAddNewTest(event) {
         event.preventDefault();
         
@@ -338,7 +376,6 @@
         }
     }
 
-    // Delete a test based on nested IDs from localStorage
     function deleteTest(subjId, topicId, modId, testId) {
         if (!confirm("Are you sure you want to delete this test?")) return;
 
@@ -361,7 +398,6 @@
         saveDB(db);
     }
 
-    // Run initialization on load
     window.onload = initApp;
 </script>
 

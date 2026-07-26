@@ -2,1114 +2,482 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Series Admin CMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        /* Ensure the modal container handles centering and padding properly */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        .modal.active {
+            display: flex;
+        }
 
-<title>Test Series Admin CMS</title>
+        /* Enable scrolling and set a max-height on the modal box */
+        .modal-box {
+            background: var(--bg-card, #1e1e2d);
+            border: 1px solid var(--border-subtle, #333);
+            border-radius: 12px;
+            padding: 24px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+            position: relative;
+        }
 
-<link rel="stylesheet" href="admin.css">
-
+        .modal-box.large {
+            max-width: 700px;
+        }
+    </style>
 </head>
-
 
 <body>
 
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
 
 <div class="layout">
 
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <span>📚 Test CMS</span>
+            <span style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: normal;">Admin v2.0</span>
+        </div>
 
-<!-- SIDEBAR -->
+        <div class="nav-section-title">Core Management</div>
+        <button onclick="openPage('dashboard')" class="nav-btn active">🏠 Dashboard</button>
+        <button onclick="openPage('subjects')" class="nav-btn">📚 Subjects</button>
+        <button onclick="openPage('topics')" class="nav-btn">📖 Topics</button>
+        <button onclick="openPage('modules')" class="nav-btn">📂 Modules</button>
+        <button onclick="openPage('questions')" class="nav-btn">📝 Question Bank</button>
+        <button onclick="openPage('builder')" class="nav-btn">⚙️ Test Builder</button>
 
-<aside class="sidebar">
+        <div class="nav-section-title">App Directory Links</div>
+        <a href="../test/test-manager.html">🛠️ Test Manager</a>
+        <a href="../test/test.html">📝 Take Test</a>
+        <a href="../test/result.html">📊 Test Results</a>
+        <a href="../topic/index.html">📁 Topic Index</a>
+        <a href="../module/index.html">📦 Module Index</a>
+        <a href="../question/analytics.html">📈 Question Analytics</a>
+        <a href="../cloud.html">Cloud Restore & Backup</a>
 
+        <hr>
 
-<div class="logo">
-📚 Test CMS
+        <div class="nav-section-title">Protected Storage</div>
+        <button onclick="openAuthModal('backup')">⬇ Protected Backup</button>
+        <button onclick="openAuthModal('restore')">⬆ Protected Restore</button>
+        
+        <input type="file" id="restoreFile" hidden accept=".json" onchange="executeFileRestore(event)">
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="mobile-toggle" onclick="toggleMobileSidebar()">☰</button>
+                <h1>Online Test Series Manager</h1>
+            </div>
+            <input id="globalSearch" placeholder="Search system...">
+        </header>
+
+        <!-- DASHBOARD PAGE -->
+        <section id="dashboard" class="page active">
+            <h2>Dashboard Overview</h2>
+            <div class="cards">
+                <div class="card">
+                    <h1 id="countSubjects">0</h1>
+                    <p>Subjects</p>
+                </div>
+                <div class="card">
+                    <h1 id="countTopics">0</h1>
+                    <p>Topics</p>
+                </div>
+                <div class="card">
+                    <h1 id="countModules">0</h1>
+                    <p>Modules</p>
+                </div>
+                <div class="card">
+                    <h1 id="countQuestions">0</h1>
+                    <p>Questions</p>
+                </div>
+                <div class="card">
+                    <h1 id="countTests">0</h1>
+                    <p>Tests</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUBJECTS PAGE -->
+        <section id="subjects" class="page">
+            <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2>Subjects</h2>
+                <button onclick="openModal('subjectModal')" style="background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer;">+ Add Subject</button>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Topics</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subjectTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TOPICS PAGE -->
+        <section id="topics" class="page">
+            <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2>Topics</h2>
+                <button onclick="openModal('topicModal')" style="background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer;">+ Add Topic</button>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Topic</th>
+                            <th>Modules</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topicTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- MODULES PAGE -->
+        <section id="modules" class="page">
+            <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2>Modules</h2>
+                <button onclick="openModal('moduleModal')" style="background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer;">+ Add Module</button>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Topic</th>
+                            <th>Module</th>
+                            <th>Questions</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="moduleTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- QUESTION BANK PAGE -->
+        <section id="questions" class="page">
+            <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2>Question Bank</h2>
+                <button onclick="openModal('questionModal')" style="background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer;">+ Add Question</button>
+            </div>
+
+            <div class="filters">
+                <select id="filterQuestionSubject" onchange="loadQuestionTopics()"></select>
+                <select id="filterQuestionTopic" onchange="loadQuestionModules()"></select>
+                <select id="filterQuestionModule" onchange="loadQuestions()"></select>
+                <input id="questionSearch" placeholder="Search question" onkeyup="loadQuestions()">
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Module</th>
+                            <th>Difficulty</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="questionTable"></tbody>
+                </table>
+            </div>
+
+            <div class="pagination" style="display: flex; gap: 12px; align-items: center; justify-content: center; margin-top: 16px;">
+                <button onclick="previousPage()" style="padding: 8px 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); color: white; border-radius: 6px; cursor: pointer;">Previous</button>
+                <span id="pageNumber">1</span>
+                <button onclick="nextPage()" style="padding: 8px 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); color: white; border-radius: 6px; cursor: pointer;">Next</button>
+            </div>
+        </section>
+
+        <!-- TEST BUILDER PAGE -->
+        <section id="builder" class="page">
+            <h2>Create Test</h2>
+            <div class="builder-box" style="display: flex; flex-direction: column; gap: 14px; margin-top: 16px; background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border-subtle);">
+                <input id="testName" placeholder="Test name">
+                <select id="builderSubject" onchange="loadBuilderTopics()"></select>
+                <select id="builderTopic" onchange="loadBuilderModules()"></select>
+                <select id="builderModule" onchange="loadBuilderQuestions()"></select>
+
+                <div class="builder-toolbar" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <input id="builderSearch" placeholder="Search questions" onkeyup="loadBuilderQuestions()">
+                    <input id="randomCount" type="number" placeholder="Random count">
+                    <button onclick="randomSelectQuestions()" style="background: var(--accent-cyan); color: white; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer;">Random Select</button>
+                </div>
+
+                <h3>Select Questions</h3>
+                <div id="builderQuestions" class="question-selector" style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-subtle); padding: 12px; border-radius: 8px;"></div>
+                <p>Selected Questions: <span id="selectedCount" style="color: var(--accent-emerald); font-weight: bold;">0</span></p>
+                <input id="testDuration" type="number" value="60" placeholder="Duration minutes">
+                <button onclick="createTest()" style="background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Create Test</button>
+            </div>
+        </section>
+
+    </main>
 </div>
 
-
-
-<button onclick="openPage('dashboard')">
-🏠 Dashboard
-</button>
-
-
-<button onclick="openPage('subjects')">
-📚 Subjects
-</button>
-
-
-<button onclick="openPage('topics')">
-📖 Topics
-</button>
-
-
-<button onclick="openPage('modules')">
-📂 Modules
-</button>
-
-
-<button onclick="openPage('questions')">
-📝 Question Bank
-</button>
-
-
-<button onclick="openPage('builder')">
-⚙ Test Builder
-</button>
-
-
-
-<hr>
-
-
-<button onclick="exportBackup()">
-⬇ Backup
-</button>
-
-
-<button onclick="document.getElementById('restoreFile').click()">
-⬆ Restore
-</button>
-
-
-<input 
-type="file"
-id="restoreFile"
-hidden
-accept=".json">
-
-
-
-</aside>
-
-
-
-
-
-
-
-
-
-<main class="main">
-
-
-<header class="topbar">
-
-
-<h1>
-Online Test Series Manager
-</h1>
-
-
-
-<input
-id="globalSearch"
-placeholder="Search...">
-
-
-</header>
-
-
-
-
-
-
-
-
-
-<!-- DASHBOARD -->
-
-<section id="dashboard" class="page active">
-
-
-<h2>
-Dashboard
-</h2>
-
-
-<div class="cards">
-
-
-<div class="card">
-<h1 id="countSubjects">0</h1>
-<p>Subjects</p>
+<!-- MODALS -->
+<div class="modal" id="securityModal">
+    <div class="modal-box">
+        <button class="close" onclick="closeModal('securityModal')">×</button>
+        <h2 id="securityModalTitle">Authentication Required</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Enter administrative access key to perform this backup or restore operation.</p>
+        <input type="password" id="adminPassword" placeholder="Enter Security Password">
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+            <button onclick="closeModal('securityModal')" style="background: transparent; border: 1px solid var(--border-subtle); color: white; padding: 10px 16px; border-radius: 8px; cursor: pointer;">Cancel</button>
+            <button onclick="verifyAndExecuteStorage()" style="background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer;">Authenticate</button>
+        </div>
+    </div>
 </div>
-
-
-
-<div class="card">
-<h1 id="countTopics">0</h1>
-<p>Topics</p>
-</div>
-
-
-
-<div class="card">
-<h1 id="countModules">0</h1>
-<p>Modules</p>
-</div>
-
-
-
-<div class="card">
-<h1 id="countQuestions">0</h1>
-<p>Questions</p>
-</div>
-
-
-
-<div class="card">
-<h1 id="countTests">0</h1>
-<p>Tests</p>
-</div>
-
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-
-
-
-<!-- SUBJECTS -->
-
-
-<section id="subjects" class="page">
-
-
-<div class="page-header">
-
-<h2>
-Subjects
-</h2>
-
-
-<button onclick="openModal('subjectModal')">
-+ Add Subject
-</button>
-
-
-</div>
-
-
-
-
-<table>
-
-
-<thead>
-
-<tr>
-
-<th>
-Subject
-</th>
-
-<th>
-Topics
-</th>
-
-<th>
-Action
-</th>
-
-
-</tr>
-
-</thead>
-
-
-
-<tbody id="subjectTable">
-
-</tbody>
-
-
-
-</table>
-
-
-</section>
-
-
-
-
-
-
-
-
-
-<!-- TOPICS -->
-
-
-<section id="topics" class="page">
-
-
-<div class="page-header">
-
-
-<h2>
-Topics
-</h2>
-
-
-
-<button onclick="openModal('topicModal')">
-+ Add Topic
-</button>
-
-
-</div>
-
-
-
-
-
-<table>
-
-
-<thead>
-
-
-<tr>
-
-<th>
-Subject
-</th>
-
-
-<th>
-Topic
-</th>
-
-
-<th>
-Modules
-</th>
-
-
-<th>
-Action
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-<tbody id="topicTable">
-
-</tbody>
-
-
-
-</table>
-
-
-</section>
-
-
-
-
-
-
-
-
-
-<!-- MODULES -->
-
-
-<section id="modules" class="page">
-
-
-<div class="page-header">
-
-
-<h2>
-Modules
-</h2>
-
-
-
-<button onclick="openModal('moduleModal')">
-+ Add Module
-</button>
-
-
-</div>
-
-
-
-
-
-<table>
-
-
-<thead>
-
-<tr>
-
-<th>
-Subject
-</th>
-
-<th>
-Topic
-</th>
-
-<th>
-Module
-</th>
-
-<th>
-Questions
-</th>
-
-<th>
-Action
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-<tbody id="moduleTable">
-
-</tbody>
-
-
-
-</table>
-
-
-</section>
-
-
-
-
-
-
-
-
-
-<!-- QUESTION BANK -->
-
-
-<section id="questions" class="page">
-
-
-<div class="page-header">
-
-
-<h2>
-Question Bank
-</h2>
-
-
-
-<button onclick="openModal('questionModal')">
-+ Add Question
-</button>
-
-
-</div>
-
-
-
-
-
-<div class="filters">
-
-
-<select 
-id="filterQuestionSubject"
-onchange="loadQuestionTopics()">
-</select>
-
-
-
-<select
-id="filterQuestionTopic"
-onchange="loadQuestionModules()">
-</select>
-
-
-
-<select
-id="filterQuestionModule"
-onchange="loadQuestions()">
-</select>
-
-
-
-<input
-id="questionSearch"
-placeholder="Search question"
-onkeyup="loadQuestions()">
-
-
-
-</div>
-
-
-
-
-
-<table>
-
-
-<thead>
-
-
-<tr>
-
-<th>
-Question
-</th>
-
-
-<th>
-Module
-</th>
-
-
-<th>
-Difficulty
-</th>
-
-
-<th>
-Action
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-<tbody id="questionTable">
-
-</tbody>
-
-
-</table>
-
-
-
-<div class="pagination">
-
-
-<button onclick="previousPage()">
-Previous
-</button>
-
-
-<span id="pageNumber">
-1
-</span>
-
-
-<button onclick="nextPage()">
-Next
-</button>
-
-
-</div>
-
-
-</section>
-<!-- TEST BUILDER -->
-
-<section id="builder" class="page">
-
-
-<h2>
-Create Test
-</h2>
-
-
-
-<div class="builder-box">
-
-
-<input
-id="testName"
-placeholder="Test name">
-
-
-
-<select id="builderSubject"
-onchange="loadBuilderTopics()">
-
-</select>
-
-
-
-
-<select id="builderTopic"
-onchange="loadBuilderModules()">
-
-</select>
-
-
-
-
-<select id="builderModule"
-onchange="loadBuilderQuestions()">
-
-</select>
-
-
-
-
-
-<div class="builder-toolbar">
-
-
-<input
-id="builderSearch"
-placeholder="Search questions"
-onkeyup="loadBuilderQuestions()">
-
-
-
-<input
-id="randomCount"
-type="number"
-placeholder="Random count">
-
-
-
-<button onclick="randomSelectQuestions()">
-
-Random Select
-
-</button>
-
-
-</div>
-
-
-
-
-
-<h3>
-Select Questions
-</h3>
-
-
-<div id="builderQuestions"
-class="question-selector">
-
-</div>
-
-
-
-
-<p>
-
-Selected Questions:
-
-<span id="selectedCount">
-0
-</span>
-
-</p>
-
-
-
-
-
-<input
-id="testDuration"
-type="number"
-value="60"
-placeholder="Duration minutes">
-
-
-
-
-
-<button onclick="createTest()">
-
-Create Test
-
-</button>
-
-
-
-</div>
-
-
-
-</section>
-
-
-
-
-
-
-
-
-
-</main>
-
-</div>
-
-
-
-
-
-
-
-
-
-<!-- ============================= -->
-<!-- SUBJECT MODAL -->
-<!-- ============================= -->
-
 
 <div class="modal" id="subjectModal">
-
-
-<div class="modal-box">
-
-
-<button class="close"
-onclick="closeModal('subjectModal')">
-×
-</button>
-
-
-
-<h2>
-Add Subject
-</h2>
-
-
-
-<input
-id="subjectName"
-placeholder="Subject name">
-
-
-
-<button onclick="saveSubject()">
-
-Save
-
-</button>
-
-
-
+    <div class="modal-box">
+        <button class="close" onclick="closeModal('subjectModal')">×</button>
+        <h2>Add Subject</h2>
+        <input id="subjectName" placeholder="Subject name">
+        <button onclick="saveSubject()" style="background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">Save</button>
+    </div>
 </div>
-
-</div>
-
-
-
-
-
-
-
-
-
-<!-- ============================= -->
-<!-- TOPIC MODAL -->
-<!-- ============================= -->
-
 
 <div class="modal" id="topicModal">
-
-
-<div class="modal-box">
-
-
-<button class="close"
-onclick="closeModal('topicModal')">
-×
-</button>
-
-
-
-<h2>
-Add Topic
-</h2>
-
-
-
-<select
-id="topicSubject">
-
-</select>
-
-
-
-
-<input
-id="topicName"
-placeholder="Topic name">
-
-
-
-<button onclick="saveTopic()">
-
-Save
-
-</button>
-
-
-
+    <div class="modal-box">
+        <button class="close" onclick="closeModal('topicModal')">×</button>
+        <h2>Add Topic</h2>
+        <select id="topicSubject"></select>
+        <input id="topicName" placeholder="Topic name">
+        <button onclick="saveTopic()" style="background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">Save</button>
+    </div>
 </div>
-
-</div>
-
-
-
-
-
-
-
-
-
-<!-- ============================= -->
-<!-- MODULE MODAL -->
-<!-- ============================= -->
-
 
 <div class="modal" id="moduleModal">
-
-
-<div class="modal-box">
-
-
-<button class="close"
-onclick="closeModal('moduleModal')">
-×
-</button>
-
-
-
-<h2>
-Add Module
-</h2>
-
-
-
-<select
-id="moduleSubject"
-onchange="loadModuleTopics()">
-
-</select>
-
-
-
-
-<select
-id="moduleTopic">
-
-</select>
-
-
-
-
-<input
-id="moduleName"
-placeholder="Module name">
-
-
-
-<button onclick="saveModule()">
-
-Save
-
-</button>
-
-
-
+    <div class="modal-box">
+        <button class="close" onclick="closeModal('moduleModal')">×</button>
+        <h2>Add Module</h2>
+        <select id="moduleSubject" onchange="loadModuleTopics()"></select>
+        <select id="moduleTopic"></select>
+        <input id="moduleName" placeholder="Module name">
+        <button onclick="saveModule()" style="background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">Save</button>
+    </div>
 </div>
-
-</div>
-
-
-
-
-
-
-
-
-
-<!-- ============================= -->
-<!-- QUESTION MODAL -->
-<!-- ============================= -->
-
 
 <div class="modal" id="questionModal">
-
-
-<div class="modal-box large">
-
-
-<button class="close"
-onclick="closeModal('questionModal')">
-×
-</button>
-
-
-
-<h2>
-Add Question
-</h2>
-
-
-
-
-<select
-id="questionSubject"
-onchange="loadQuestionTopics()">
-
-</select>
-
-
-
-
-<select
-id="questionTopic"
-onchange="loadQuestionModules()">
-
-</select>
-
-
-
-
-<select
-id="questionModule">
-
-</select>
-
-
-
-
-
-
-
-<textarea
-id="questionText"
-placeholder="Question">
-
-</textarea>
-
-
-
-
-
-<input
-id="optionA"
-placeholder="Option A">
-
-
-<input
-id="optionB"
-placeholder="Option B">
-
-
-<input
-id="optionC"
-placeholder="Option C">
-
-
-<input
-id="optionD"
-placeholder="Option D">
-
-
-
-
-
-
-<select id="correctAnswer">
-
-<option value="A">
-A
-</option>
-
-<option value="B">
-B
-</option>
-
-<option value="C">
-C
-</option>
-
-<option value="D">
-D
-</option>
-
-
-</select>
-
-
-
-
-
-<select id="difficulty">
-
-
-<option>
-Easy
-</option>
-
-
-<option>
-Medium
-</option>
-
-
-<option>
-Hard
-</option>
-
-
-</select>
-
-
-
-
-
-
-<button onclick="saveQuestion()">
-
-Save Question
-
-</button>
-
-
-
-
+    <div class="modal-box large">
+        <button class="close" onclick="closeModal('questionModal')">×</button>
+        <h2>Add Question</h2>
+        <select id="questionSubject" onchange="loadQuestionTopics()"></select>
+        <select id="questionTopic" onchange="loadQuestionModules()"></select>
+        <select id="questionModule"></select>
+        <textarea id="questionText" placeholder="Question Text" rows="3"></textarea>
+        <input id="optionA" placeholder="Option A">
+        <input id="optionB" placeholder="Option B">
+        <input id="optionC" placeholder="Option C">
+        <input id="optionD" placeholder="Option D">
+        <select id="correctAnswer">
+            <option value="A">Option A</option>
+            <option value="B">Option B</option>
+            <option value="C">Option C</option>
+            <option value="D">Option D</option>
+        </select>
+        <select id="difficulty">
+            <option>Easy</option>
+            <option>Medium</option>
+            <option>Hard</option>
+        </select>
+        <button onclick="saveQuestion()" style="background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer;">Save Question</button>
+    </div>
 </div>
-
-</div>
-
-
-
-
-
-
-
-
-
-<!-- ============================= -->
-<!-- EDIT QUESTION MODAL -->
-<!-- ============================= -->
-
 
 <div class="modal" id="editModal">
-
-
-<div class="modal-box">
-
-
-<button class="close"
-onclick="closeModal('editModal')">
-×
-</button>
-
-
-
-<h2>
-Edit Question
-</h2>
-
-
-
-
-<input
-id="editQuestionId"
-hidden>
-
-
-
-
-<textarea
-id="editQuestionText">
-
-</textarea>
-
-
-
-<input id="editOptionA">
-
-<input id="editOptionB">
-
-<input id="editOptionC">
-
-<input id="editOptionD">
-
-
-
-
-
-<select id="editCorrectAnswer">
-
-<option>A</option>
-
-<option>B</option>
-
-<option>C</option>
-
-<option>D</option>
-
-</select>
-
-
-
-
-
-<button onclick="updateQuestion()">
-
-Update
-
-</button>
-
-
-
+    <div class="modal-box">
+        <button class="close" onclick="closeModal('editModal')">×</button>
+        <h2>Edit Question</h2>
+        <input id="editQuestionId" hidden>
+        <textarea id="editQuestionText" rows="3"></textarea>
+        <input id="editOptionA">
+        <input id="editOptionB">
+        <input id="editOptionC">
+        <input id="editOptionD">
+        <select id="editCorrectAnswer">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+        </select>
+        <button onclick="updateQuestion()" style="background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">Update</button>
+    </div>
 </div>
-
-</div>
-
-
-
-
-
-
-
-
-
 
 <script src="database.js"></script>
-
 <script src="admin.js"></script>
 
+<!-- PASSWORD SECURITY & NAVIGATION SYSTEM CONTROLLER -->
+<script>
+    let activeStorageMode = null;
+    const ADMIN_SECURITY_KEY = "admin123";
+
+    function toggleMobileSidebar() {
+        document.getElementById("sidebar").classList.toggle("open");
+        document.getElementById("sidebarOverlay").classList.toggle("open");
+    }
+
+    function openPage(pageId) {
+        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+        document.querySelectorAll(".sidebar .nav-btn").forEach(b => b.classList.remove("active"));
+
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) targetPage.classList.add("active");
+
+        if (window.innerWidth <= 900) {
+            toggleMobileSidebar();
+        }
+    }
+
+    function openModal(id) {
+        document.getElementById(id).classList.add("active");
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove("active");
+    }
+
+    function openAuthModal(action) {
+        activeStorageMode = action;
+        document.getElementById("adminPassword").value = "";
+        document.getElementById("securityModalTitle").innerText = action === 'backup' ? "Backup Authorization" : "Restore Authorization";
+        openModal("securityModal");
+    }
+
+    function verifyAndExecuteStorage() {
+        const enteredKey = document.getElementById("adminPassword").value;
+        if (enteredKey !== ADMIN_SECURITY_KEY) {
+            alert("Unauthorized Access: Incorrect Password!");
+            return;
+        }
+
+        closeModal("securityModal");
+
+        if (activeStorageMode === 'backup') {
+            executeExportBackup();
+        } else if (activeStorageMode === 'restore') {
+            document.getElementById("restoreFile").click();
+        }
+    }
+
+    function executeExportBackup() {
+        const rawData = localStorage.getItem("testSeriesDB") || "{}";
+        const blob = new Blob([rawData], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `test_series_backup_${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function executeFileRestore(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const parsed = JSON.parse(e.target.result);
+                localStorage.setItem("testSeriesDB", JSON.stringify(parsed));
+                alert("Database successfully restored!");
+                location.reload();
+            } catch (err) {
+                alert("Failed to parse JSON file.");
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    // Fully Integrated Dashboard Metrics Loader Matching Nested Schema
+    function loadDashboardMetrics() {
+        try {
+            if (typeof loadDatabase === "function") {
+                loadDatabase();
+            }
+
+            const raw = localStorage.getItem("testSeriesDB");
+            if (!raw) return;
+
+            const databaseObj = JSON.parse(raw);
+            
+            let totalSubjects = 0;
+            let totalTopics = 0;
+            let totalModules = 0;
+            let totalQuestions = 0;
+            let totalTests = 0;
+
+            if (databaseObj.subjects && Array.isArray(databaseObj.subjects)) {
+                totalSubjects = databaseObj.subjects.length;
+                
+                databaseObj.subjects.forEach(subject => {
+                    if (subject.topics && Array.isArray(subject.topics)) {
+                        totalTopics += subject.topics.length;
+                        
+                        subject.topics.forEach(topic => {
+                            if (topic.modules && Array.isArray(topic.modules)) {
+                                totalModules += topic.modules.length;
+                                
+                                topic.modules.forEach(module => {
+                                    if (module.questions && Array.isArray(module.questions)) {
+                                        totalQuestions += module.questions.length;
+                                    }
+                                    if (module.tests && Array.isArray(module.tests)) {
+                                        totalTests += module.tests.length;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
+            if (document.getElementById("countSubjects")) document.getElementById("countSubjects").textContent = totalSubjects;
+            if (document.getElementById("countTopics")) document.getElementById("countTopics").textContent = totalTopics;
+            if (document.getElementById("countModules")) document.getElementById("countModules").textContent = totalModules;
+            if (document.getElementById("countQuestions")) document.getElementById("countQuestions").textContent = totalQuestions;
+            if (document.getElementById("countTests")) document.getElementById("countTests").textContent = totalTests;
+
+        } catch (e) {
+            console.warn("Could not load dashboard metrics:", e);
+        }
+    }
+
+    window.addEventListener("DOMContentLoaded", loadDashboardMetrics);
+</script>
 
 </body>
-
 </html>

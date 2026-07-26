@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TestSeriesDB, ResultsDB & QuestionsDB Cloud Sync & File Backup</title>
+    <!-- Firebase App (Compat) SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <!-- Firebase Firestore (Compat) SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .nav-bar {
+            width: 100%;
+            max-width: 420px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-start;
+        }
+        .nav-bar a {
+            text-decoration: none;
+            background: #334155;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .nav-bar a:hover {
+            background: #1e293b;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 420px;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #555;
+            margin: 15px 0 5px 0;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 3px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-backup { background-color: #4CAF50; color: white; }
+        .btn-backup:hover { background-color: #45a049; }
+        .btn-restore { background-color: #2196F3; color: white; }
+        .btn-restore:hover { background-color: #0b7dda; }
+        .btn-export { background-color: #ff9800; color: white; }
+        .btn-export:hover { background-color: #e68900; }
+        .btn-import { background-color: #9c27b0; color: white; }
+        .btn-import:hover { background-color: #7b1fa2; }
+        #status {
+            margin-top: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #666;
+            word-break: break-word;
+            padding: 10px;
+            border-radius: 4px;
+            background: #f8fafc;
+        }
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        <a href="../index.html">← Back to Dashboard Hub</a>
+    </div>
+
+    <div class="container">
+        <h2>App Storage Sync</h2>
+        
+        <div class="section-title">1. Test Series DB (`testSeriesDB`)</div>
+        <button class="btn-backup" onclick="handleAction('backup', 'testSeriesDB')">Backup DB to Cloud</button>
+        <button class="btn-restore" onclick="handleAction('restore', 'testSeriesDB')">Restore DB from Cloud</button>
+        <button class="btn-export" onclick="handleAction('export', 'testSeriesDB')">Export DB to JSON</button>
+        <button class="btn-import" onclick="verifyPasswordAndTrigger('testSeriesDB')">Import DB from JSON</button>
+
+        <div class="section-title">2. Results DB (`testSeriesResultsDB`)</div>
+        <button class="btn-backup" onclick="handleAction('backup', 'testSeriesResultsDB')">Backup Results to Cloud</button>
+        <button class="btn-restore" onclick="handleAction('restore', 'testSeriesResultsDB')">Restore Results from Cloud</button>
+        <button class="btn-export" onclick="handleAction('export', 'testSeriesResultsDB')">Export Results to JSON</button>
+        <button class="btn-import" onclick="verifyPasswordAndTrigger('testSeriesResultsDB')">Import Results from JSON</button>
+
+        <div class="section-title">3. Master Questions DB (`masterQuestionsDB`)</div>
+        <button class="btn-backup" onclick="handleAction('backup', 'masterQuestionsDB')">Backup Questions to Cloud</button>
+        <button class="btn-restore" onclick="handleAction('restore', 'masterQuestionsDB')">Restore Questions from Cloud</button>
+        <button class="btn-export" onclick="handleAction('export', 'masterQuestionsDB')">Export Questions to JSON</button>
+        <button class="btn-import" onclick="verifyPasswordAndTrigger('masterQuestionsDB')">Import Questions from JSON</button>
+
+        <!-- Hidden file inputs for imports -->
+        <input type="file" id="importFile_testSeriesDB" accept=".json" onchange="importFromJsonFile(event, 'testSeriesDB')">
+        <input type="file" id="importFile_testSeriesResultsDB" accept=".json" onchange="importFromJsonFile(event, 'testSeriesResultsDB')">
+        <input type="file" id="importFile_masterQuestionsDB" accept=".json" onchange="importFromJsonFile(event, 'masterQuestionsDB')">
+
+        <div id="status">Ready</div>
+    </div>
+
+    <script>
+        // Configuration & Hardcoded Password
+        const ADMIN_PASSWORD = "password"; // Change this to your password
+
+        const DB_KEY = "testSeriesDB";
+        const RESULTS_DB_KEY = "testSeriesResultsDB";
+        const STORAGE_KEY_QUESTIONS = "masterQuestionsDB";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCSwr1mbjcFhjeWCoZIipb5TE3o0jLkU7M",
+            authDomain: "quiz-43b3e.firebaseapp.com",
+            projectId: "quiz-43b3e",
+            storageBucket: "quiz-43b3e.appspot.com",
+            messagingSenderId: "477037762591",
+            appId: "1:477037762591:web:03478c214a0477ff819d2a"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const userId = "default_user"; 
+
+        function updateStatus(message, isError = false) {
+            const statusDiv = document.getElementById("status");
+            statusDiv.textContent = message;
+            statusDiv.style.color = isError ? "#d9534f" : "#4CAF50";
+        }
+
+        // Check password before executing any action
+        function handleAction(actionType, targetKey) {
+            const enteredPassword = prompt("Enter admin password to proceed:");
+            if (enteredPassword === null) return; // Cancelled
+
+            if (enteredPassword !== ADMIN_PASSWORD) {
+                updateStatus("Incorrect password!", true);
+                return;
+            }
+
+            // Route to appropriate function
+            if (actionType === 'backup') backupToFirebase(targetKey);
+            if (actionType === 'restore') restoreFromFirebase(targetKey);
+            if (actionType === 'export') exportToJsonFile(targetKey);
+        }
+
+        function verifyPasswordAndTrigger(targetKey) {
+            const enteredPassword = prompt("Enter admin password to proceed:");
+            if (enteredPassword === null) return;
+
+            if (enteredPassword !== ADMIN_PASSWORD) {
+                updateStatus("Incorrect password!", true);
+                return;
+            }
+
+            document.getElementById(`importFile_${targetKey}`).click();
+        }
+
+        // 1. Backup to Firebase
+        async function backupToFirebase(key) {
+            try {
+                updateStatus(`Backing up ${key} to cloud...`);
+                const localData = localStorage.getItem(key);
+                
+                if (!localData) {
+                    updateStatus(`No data found in localStorage for '${key}'.`, true);
+                    return;
+                }
+
+                const parsedData = JSON.parse(localData);
+
+                // Fetch existing document to avoid overwriting the other database fields completely
+                const docRef = db.collection("backups").doc(userId);
+                let docSnap = await docRef.get();
+                let existingData = docSnap.exists ? docSnap.data() : {};
+
+                existingData[key] = parsedData;
+                existingData.lastUpdated = firebase.firestore.FieldValue.serverTimestamp();
+
+                await docRef.set(existingData);
+                updateStatus(`Cloud backup for ${key} successful!`);
+            } catch (error) {
+                console.error("Error during backup: ", error);
+                updateStatus("Backup failed. Check console.", true);
+            }
+        }
+
+        // 2. Restore from Firebase
+        async function restoreFromFirebase(key) {
+            try {
+                updateStatus(`Restoring ${key} from cloud...`);
+                const docRef = await db.collection("backups").doc(userId).get();
+
+                if (docRef.exists) {
+                    const firestoreData = docRef.data();
+                    
+                    if (firestoreData[key]) {
+                        localStorage.setItem(key, JSON.stringify(firestoreData[key]));
+                        updateStatus(`Cloud restore for ${key} successful! Please refresh.`);
+                    } else {
+                        updateStatus(`No '${key}' found in cloud backup.`, true);
+                    }
+                } else {
+                    updateStatus("No cloud backup found.", true);
+                }
+            } catch (error) {
+                console.error("Error during restore: ", error);
+                updateStatus("Restore failed. Check console.", true);
+            }
+        }
+
+        // 3. Export to JSON File
+        function exportToJsonFile(key) {
+            try {
+                const localData = localStorage.getItem(key);
+                
+                if (!localData) {
+                    updateStatus(`No data found in localStorage for ${key} to export.`, true);
+                    return;
+                }
+
+                const blob = new Blob([localData], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `${key}_backup.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                updateStatus(`${key} JSON file exported successfully!`);
+            } catch (error) {
+                console.error("Error during export: ", error);
+                updateStatus("Export failed. Check console.", true);
+            }
+        }
+
+        // 4. Import from JSON File
+        function importFromJsonFile(event, key) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    const parsed = JSON.parse(content);
+                    
+                    localStorage.setItem(key, JSON.stringify(parsed));
+                    updateStatus(`${key} JSON file imported successfully! Please refresh.`);
+                } catch (error) {
+                    console.error("Error parsing JSON file: ", error);
+                    updateStatus("Invalid JSON file format.", true);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = "";
+        }
+    </script>
+</body>
+</html>

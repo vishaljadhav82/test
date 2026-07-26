@@ -3,470 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Architecture Test Suite | Assessment Portal</title>
+    <title>Master Test Portal</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="master-test.css">
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --warning: #ca8a04;
-            --background: #f8fafc;
-            --surface: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-            --radius: 8px;
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-
-        body {
-            background-color: var(--background);
-            color: var(--text);
-            line-height: 1.5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            background-color: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header h1 {
-            font-size: 1.25rem;
-            color: var(--primary);
-        }
-
-        main {
-            flex: 1;
-            max-width: 1000px;
-            width: 100%;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .card {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .screen {
-            display: none;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        .repo-header-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            margin-bottom: 1.5rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 0.9375rem;
-        }
-
-        th, td {
-            padding: 0.875rem 1rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        th {
-            background-color: var(--background);
-            font-weight: 600;
-            color: var(--text-light);
-        }
-
-        tr:hover td {
-            background-color: #f8fafc;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1rem;
-        }
-
-        .setup-group {
-            margin-bottom: 1.25rem;
-        }
-
-        .setup-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        .setup-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            font-size: 1rem;
-            background-color: var(--surface);
-        }
-
-        .test-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .timer {
-            font-weight: 700;
-            font-size: 1.125rem;
-            color: var(--danger);
-            background: #fee2e2;
-            padding: 0.35rem 0.75rem;
-            border-radius: var(--radius);
-        }
-
-        .question-meta {
-            font-size: 0.875rem;
-            color: var(--text-light);
-            margin-bottom: 0.5rem;
-        }
-
-        .question-text {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-        }
-
-        .options-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-        }
-
-        .option-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .option-item:hover {
-            border-color: var(--primary);
-            background-color: #f8fafc;
-        }
-
-        .option-item input {
-            margin-right: 1rem;
-            accent-color: var(--primary);
-        }
-
-        .option-item.selected {
-            border-color: var(--primary);
-            background-color: #eff6ff;
-        }
-
-        .test-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--radius);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        button:hover {
-            background-color: var(--primary-dark);
-        }
-
-        button.secondary {
-            background-color: var(--surface);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-
-        button.secondary:hover {
-            background-color: var(--background);
-        }
-
-        button.danger {
-            background-color: var(--danger);
-        }
-
-        button.danger:hover {
-            background-color: #b91c1c;
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .results-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .metric-card {
-            background: var(--background);
-            padding: 1.25rem;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            text-align: center;
-        }
-
-        .metric-card h3 {
-            font-size: 0.875rem;
-            color: var(--text-light);
-            margin-bottom: 0.5rem;
-        }
-
-        .metric-card .value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .review-section {
-            margin-top: 2rem;
-        }
-
-        .review-item {
-            padding: 1.25rem;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            margin-bottom: 1rem;
-        }
-
-        .review-item.correct { border-left: 5px solid var(--success); }
-        .review-item.incorrect { border-left: 5px solid var(--danger); }
-        .review-item.skipped { border-left: 5px solid var(--warning); }
-
-        .badge {
-            display: inline-block;
-            padding: 0.2rem 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-            border-radius: 4px;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-        }
-
-        .badge.correct { background: #dcfce7; color: var(--success); }
-        .badge.incorrect { background: #fee2e2; color: var(--danger); }
-        .badge.skipped { background: #fef9c3; color: var(--warning); }
-
-        .palette {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .palette-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            font-weight: 600;
-            font-size: 0.875rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-        }
-
-        .palette-btn.current {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-        }
-
-        .palette-btn.answered {
-            background-color: #e0f2fe;
-            border-color: #7dd3fc;
-            color: #0369a1;
-        }
+     
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Master Architecture Test Suite</h1>
-        <div id="header-status" style="font-size: 0.875rem; color: var(--text-light);">System Ready</div>
-    </header>
+    <!-- GLOBAL NAVIGATION BAR -->
+    <nav>
+        <a href="../test/master-test.html" class="nav-brand">Master Test Portal</a>
+        
+        <div class="nav-group">
+            <span class="nav-group-title">Test:</span>
+            <a href="../test/master-test.html" class="nav-link active">Master</a>
+            <a href="../test/builder.html" class="nav-link">Builder</a>
+            <a href="../test/test-manager.html" class="nav-link">Manager</a>
+            <a href="../test/test.html" class="nav-link">Runner</a>
+            <a href="../test/result.html" class="nav-link">Results</a>
+        </div>
 
-    <main>
-        <!-- SCREEN 1: PAGINATED REPOSITORY TABLE -->
+        <div class="nav-group">
+            <span class="nav-group-title">Topic:</span>
+            <a href="../topic/index.html" class="nav-link">Index</a>
+        </div>
+
+        <div class="nav-group">
+            <span class="nav-group-title">Admin:</span>
+            <a href="../admin/admin.html" class="nav-link">Admin</a>
+        </div>
+
+        <div class="nav-group">
+            <span class="nav-group-title">Module:</span>
+            <a href="../module/index.html" class="nav-link">Index</a>
+        </div>
+
+        <div class="nav-group">
+            <span class="nav-group-title">Question:</span>
+            <a href="../question/index.html" class="nav-link">Index</a>
+            <a href="../question/analytics.html" class="nav-link">Analytics</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="header-panel">
+            <div>
+                <h1 style="font-size: 1.25rem;">Evaluation Platform</h1>
+                <p style="font-size: 0.85rem; color: var(--text-light);" id="header-status">System Ready</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button id="export-db-btn" class="btn-secondary" style="font-size: 0.8rem;">☁️ Backup (Export)</button>
+                <button id="import-db-btn" class="btn-secondary" style="font-size: 0.8rem;">📥 Restore (Import)</button>
+                <input type="file" id="import-file-input" accept=".json" style="display: none;" />
+            </div>
+        </header>
+
+        <!-- SCREEN 1: REPOSITORY SETUP -->
         <div id="screen-setup" class="screen active">
             <div class="card">
-                <div class="repo-header-actions">
-                    <div>
-                        <h2>Master Test Repository</h2>
-                        <span id="repo-count-badge" style="font-size: 0.875rem; color: var(--text-light); font-weight: 600;">Total Tests: 0</span>
-                    </div>
-                    <div style="display: flex; gap: 0.75rem;">
-                        <button id="export-db-btn" class="secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Export DB (JSON)</button>
-                        <button id="import-db-btn" class="secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Import DB</button>
-                        <input type="file" id="import-file-input" accept=".json" style="display: none;">
-                    </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>Available Test Repository</h2>
+                    <span id="repo-count-badge" class="badge skipped">Total Tests: 0</span>
                 </div>
-
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Test Title</th>
-                                <th>Duration</th>
-                                <th>Questions Pool</th>
-                                <th style="text-align: right;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="repo-table-body">
-                            <!-- Populated dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="pagination">
-                    <button id="prev-page-btn" class="secondary" disabled>Previous Page</button>
-                    <span id="page-indicator" style="font-size: 0.875rem; font-weight: 600; color: var(--text-light);">Page 1 of 1</span>
-                    <button id="next-page-btn" class="secondary" disabled>Next Page</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Test Title</th>
+                            <th>Duration</th>
+                            <th>Question Count</th>
+                            <th style="text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="repo-table-body">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                    <button id="prev-page-btn" disabled>Previous</button>
+                    <span id="page-indicator" style="font-size: 0.875rem; color: var(--text-light);">Page 1 of 1</span>
+                    <button id="next-page-btn" disabled>Next</button>
                 </div>
             </div>
         </div>
 
         <!-- SCREEN 2: CONFIGURATION MODAL -->
         <div id="screen-config" class="screen">
-            <div class="card" style="max-width: 500px; margin: 0 auto;">
-                <h2 id="config-test-title" style="margin-bottom: 1rem;">Configure Test Session</h2>
-                <p id="config-test-desc" style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 1.5rem;"></p>
-
-                <div class="setup-group">
-                    <label for="timer-select">Time Limit Override</label>
-                    <select id="timer-select">
-                        <option value="test-defined" selected>Use Test-Defined Duration</option>
-                        <option value="300">5 Minutes (Quick Test)</option>
-                        <option value="900">15 Minutes (Standard)</option>
-                        <option value="1800">30 Minutes (Deep Evaluation)</option>
+            <div class="card">
+                <h2 id="config-test-title">Test Configuration</h2>
+                <p id="config-test-desc" style="color: var(--text-light); margin: 0.5rem 0 1.5rem 0;"></p>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Timer Settings</label>
+                    <select id="timer-select" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border);">
+                        <option value="test-defined">Use Test Default Duration</option>
+                        <option value="300">5 Minutes (Speed Run)</option>
+                        <option value="900">15 Minutes</option>
+                        <option value="1800">30 Minutes</option>
                         <option value="0">Untimed Session</option>
                     </select>
                 </div>
 
-                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                    <button id="cancel-config-btn" class="secondary" style="flex: 1;">Cancel</button>
-                    <button id="start-test-btn" style="flex: 1;">Start Assessment</button>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button id="cancel-config-btn" class="btn-secondary">Cancel</button>
+                    <button id="start-test-btn">Start Test Session</button>
                 </div>
             </div>
         </div>
 
-        <!-- SCREEN 3: ACTIVE TEST RUNNER -->
+        <!-- SCREEN 3: ACTIVE TEST -->
         <div id="screen-test" class="screen">
-            <div class="card">
-                <div class="test-header">
-                    <div>
-                        <span id="progress-indicator" style="font-weight: 600; font-size: 0.875rem;">Question 1 of 0</span>
+            <div class="test-grid">
+                <div>
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <span id="question-category" class="badge skipped">Category</span>
+                            <span id="progress-indicator" style="font-weight: 600; font-size: 0.875rem;">Question 1 of 10</span>
+                        </div>
+                        <h3 id="question-text" style="margin-bottom: 1.5rem;">Question text goes here...</h3>
+                        <div id="options-container"></div>
+                        
+                        <div style="display: flex; justify-content: space-between; margin-top: 1.5rem;">
+                            <button id="clear-btn" class="btn-secondary">Clear Answer</button>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button id="prev-btn" class="btn-secondary">Previous</button>
+                                <button id="next-btn">Next</button>
+                                <button id="submit-btn" style="display: none; background: var(--success);">Submit Test</button>
+                            </div>
+                        </div>
                     </div>
-                    <div id="timer-display" class="timer" style="display: none;">15:00</div>
                 </div>
 
-                <div id="palette" class="palette"></div>
-
-                <div class="question-meta" id="question-category">Module Header</div>
-                <div class="question-text" id="question-text">Loading question parameter structure...</div>
-
-                <div class="options-list" id="options-container"></div>
-
-                <div class="test-controls">
-                    <button id="prev-btn" class="secondary">Previous</button>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <button id="clear-btn" class="secondary">Clear Choice</button>
-                        <button id="next-btn">Next</button>
-                        <button id="submit-btn" class="danger" style="display: none;">Submit Test</button>
+                <div>
+                    <div class="card">
+                        <div id="timer-display" style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 1rem; color: var(--primary);">15:00</div>
+                        <h4 style="margin-bottom: 0.75rem;">Question Palette</h4>
+                        <div id="palette" class="palette"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- SCREEN 4: ANALYTICS & RESULTS DASHBOARD -->
+        <!-- SCREEN 4: RESULTS & ANALYTICS -->
         <div id="screen-results" class="screen">
             <div class="card">
-                <h2 style="margin-bottom: 1.5rem;">Assessment Performance Report</h2>
-                
-                <div class="results-summary">
-                    <div class="metric-card">
-                        <h3>Final Score</h3>
-                        <div class="value" id="res-score">0 / 0</div>
+                <h2>Evaluation Report</h2>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; text-align: center;">
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 6px;">
+                        <span style="font-size: 0.85rem; color: var(--text-light);">Score</span>
+                        <div id="res-score" style="font-size: 1.5rem; font-weight: 700;">0 / 0</div>
                     </div>
-                    <div class="metric-card">
-                        <h3>Accuracy</h3>
-                        <div class="value" id="res-accuracy">0%</div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 6px;">
+                        <span style="font-size: 0.85rem; color: var(--text-light);">Accuracy</span>
+                        <div id="res-accuracy" style="font-size: 1.5rem; font-weight: 700;">0%</div>
                     </div>
-                    <div class="metric-card">
-                        <h3>Time Elapsed</h3>
-                        <div class="value" id="res-time">00:00</div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 6px;">
+                        <span style="font-size: 0.85rem; color: var(--text-light);">Time Spent</span>
+                        <div id="res-time" style="font-size: 1.5rem; font-weight: 700;">00:00</div>
                     </div>
                 </div>
 
-                <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
-                    <button id="restart-btn" style="flex: 1;">Return to Repository Table</button>
-                </div>
+                <h3>Detailed Question Review</h3>
+                <div id="review-container" style="margin-top: 1rem;"></div>
 
-                <h3 style="margin-bottom: 1rem;">Comprehensive Question Review</h3>
-                <div class="review-section" id="review-container"></div>
+                <div style="text-align: right; margin-top: 1.5rem;">
+                    <button id="restart-btn">Back to Repository</button>
+                </div>
             </div>
         </div>
-    </main>
+    </div>
 
+    <!-- MAIN LOGIC SCRIPT -->
     <script>
+        // --- CONFIG & CONSTANTS ---
+        const HARDCODED_ADMIN_PASSWORD = "admin123";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCSwr1mbjcFhjeWCoZIipb5TE3o0jLkU7M",
+            authDomain: "quiz-43b3e.firebaseapp.com",
+            projectId: "quiz-43b3e",
+            storageBucket: "quiz-43b3e.appspot.com",
+            messagingSenderId: "477037762591",
+            appId: "1:477037762591:web:03478c214a0477ff819d2a"
+        };
+
+        // Initialize Firebase & Firestore
+        let db = null;
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            db = firebase.firestore();
+        } catch (err) {
+            console.warn("Firebase initialization failed:", err);
+        }
+
         const STORAGE_KEY_TESTS = 'testSeriesDB';
-        const STORAGE_KEY_QUESTIONS = 'masterQuestionsDB'; // fallback global lookup for question objects if referenced by IDs
+        const STORAGE_KEY_QUESTIONS = 'masterQuestionsDB';
         const PAGE_SIZE = 5;
 
         let testsList = [];
@@ -484,7 +220,7 @@
             endTime: null
         };
 
-        // DOM Element References
+        // DOM References
         const screens = {
             setup: document.getElementById('screen-setup'),
             config: document.getElementById('screen-config'),
@@ -527,13 +263,24 @@
         const reviewContainer = document.getElementById('review-container');
         const headerStatus = document.getElementById('header-status');
 
-        // Load repository from testSeriesDB
+        // --- PASSWORD AUTHENTICATION HELPER ---
+        function authenticateAdmin() {
+            const inputPassword = prompt("🔐 Security Verification Required\nPlease enter the Admin Password:");
+            if (inputPassword === null) return false;
+            if (inputPassword === HARDCODED_ADMIN_PASSWORD) {
+                return true;
+            } else {
+                alert("❌ Incorrect Password. Access Denied.");
+                return false;
+            }
+        }
+
+        // --- REPOSITORY & STORAGE LOGIC ---
         function loadTestSeriesRepository() {
             try {
                 const raw = localStorage.getItem(STORAGE_KEY_TESTS);
                 if (raw) {
                     const parsed = JSON.parse(raw);
-                    // Handle wrapper schema like { tests: [...] } or direct array [...]
                     if (Array.isArray(parsed)) {
                         testsList = parsed;
                     } else if (parsed && Array.isArray(parsed.tests)) {
@@ -542,17 +289,17 @@
                         testsList = [];
                     }
                 } else {
-                    // Seed the exact requested format structure if empty
                     const seedData = {
                         "tests": [
                             {
                                 "id": 1784976781135,
-                                "title": "111",
-                                "duration": 120,
+                                "title": "Sample Master Assessment 1",
+                                "duration": 15,
                                 "selectedModuleIds": [302],
-                                "questionIds": [6001, 6002, 6003, 6004, 6005, 6006],
+                                "questionIds": [6001, 6002],
                                 "questions": [
-                                    { "question": "Sample Architecture Q1", "options": ["A", "B", "C", "D"], "correct": 0 }
+                                    { "question": "What is the primary function of DHCP?", "options": ["Assign IP Addresses", "Resolve Hostnames", "Route Packets", "Filter Traffic"], "correct": 0 },
+                                    { "question": "Which HTTP status code indicates 'Not Found'?", "options": ["200", "403", "404", "500"], "correct": 2 }
                                 ]
                             }
                         ]
@@ -571,7 +318,7 @@
             repoCountBadge.textContent = `Total Tests: ${testsList.length}`;
 
             if (testsList.length === 0) {
-                repoTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 2rem;">No tests found in testSeriesDB. Use 'Import DB' to load your payload.</td></tr>`;
+                repoTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 2rem;">No tests found in testSeriesDB. Use 'Restore' to load data.</td></tr>`;
                 prevPageBtn.disabled = true;
                 nextPageBtn.disabled = true;
                 pageIndicator.textContent = "Page 0 of 0";
@@ -621,22 +368,75 @@
             }
         };
 
-        // Export Database
-        exportDbBtn.onclick = () => {
+        // --- PASSWORD-PROTECTED BACKUP (EXPORT) ---
+        exportDbBtn.onclick = async () => {
+            if (!authenticateAdmin()) return;
+
             loadTestSeriesRepository();
-            const exportPayload = { tests: testsList };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportPayload, null, 2));
+            const masterQuestions = localStorage.getItem(STORAGE_KEY_QUESTIONS);
+            
+            const backupPayload = {
+                timestamp: new Date().toISOString(),
+                testSeriesDB: testsList,
+                masterQuestionsDB: masterQuestions ? JSON.parse(masterQuestions) : {}
+            };
+
+            // Firebase Cloud Backup
+            if (db) {
+                try {
+                    await db.collection("backups").doc("latest").set(backupPayload);
+                    alert("✅ Success: Database backed up to Firebase Cloud & downloaded locally!");
+                } catch (err) {
+                    console.error("Firebase Sync failed:", err);
+                    alert("⚠️ Cloud Backup Failed. Falling back to local file download.");
+                }
+            }
+
+            // Local Download
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupPayload, null, 2));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `testSeriesDB_${Date.now()}.json`);
+            downloadAnchor.setAttribute("download", `testSeriesDB_Backup_${Date.now()}.json`);
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
         };
 
-        // Import Database
-        importDbBtn.onclick = () => {
-            importFileInput.click();
+        // --- PASSWORD-PROTECTED RESTORE (IMPORT) ---
+        importDbBtn.onclick = async () => {
+            if (!authenticateAdmin()) return;
+
+            const restoreChoice = confirm("Press [OK] to Restore from Firebase Cloud Backup.\nPress [Cancel] to Upload a local JSON file.");
+
+            if (restoreChoice) {
+                if (!db) {
+                    alert("❌ Firebase is not initialized.");
+                    return;
+                }
+
+                try {
+                    const doc = await db.collection("backups").doc("latest").get();
+                    if (doc.exists) {
+                        const data = doc.data();
+                        if (data.testSeriesDB) {
+                            localStorage.setItem(STORAGE_KEY_TESTS, JSON.stringify({ tests: data.testSeriesDB }));
+                        }
+                        if (data.masterQuestionsDB) {
+                            localStorage.setItem(STORAGE_KEY_QUESTIONS, JSON.stringify(data.masterQuestionsDB));
+                        }
+                        currentPage = 1;
+                        renderRepositoryTable();
+                        alert("✅ Database successfully restored from Cloud Backup!");
+                    } else {
+                        alert("❌ No Cloud Backup found.");
+                    }
+                } catch (err) {
+                    console.error("Firebase restore error:", err);
+                    alert("❌ Failed to restore from cloud.");
+                }
+            } else {
+                importFileInput.click();
+            }
         };
 
         importFileInput.onchange = (event) => {
@@ -648,7 +448,13 @@
                 try {
                     const parsed = JSON.parse(e.target.result);
                     let newTests = [];
-                    if (Array.isArray(parsed)) {
+                    
+                    if (parsed.testSeriesDB && Array.isArray(parsed.testSeriesDB)) {
+                        newTests = parsed.testSeriesDB;
+                        if (parsed.masterQuestionsDB) {
+                            localStorage.setItem(STORAGE_KEY_QUESTIONS, JSON.stringify(parsed.masterQuestionsDB));
+                        }
+                    } else if (Array.isArray(parsed)) {
                         newTests = parsed;
                     } else if (parsed && Array.isArray(parsed.tests)) {
                         newTests = parsed.tests;
@@ -658,51 +464,47 @@
                         localStorage.setItem(STORAGE_KEY_TESTS, JSON.stringify({ tests: newTests }));
                         currentPage = 1;
                         renderRepositoryTable();
-                        alert("testSeriesDB successfully imported!");
+                        alert("✅ testSeriesDB successfully imported!");
                     } else {
-                        alert("Uploaded JSON does not contain a valid 'tests' array format.");
+                        alert("❌ Uploaded JSON does not contain valid test data.");
                     }
                 } catch (err) {
                     console.error("Import error:", err);
-                    alert("Failed to parse JSON file.");
+                    alert("❌ Failed to parse JSON file.");
                 }
                 importFileInput.value = '';
             };
             reader.readAsText(file);
         };
 
+        // --- TEST SESSION MANAGEMENT ---
         window.openConfigModal = function(index) {
             selectedTestObj = testsList[index];
             if (!selectedTestObj) return;
 
             const poolCount = (selectedTestObj.questions && selectedTestObj.questions.length) || (selectedTestObj.questionIds && selectedTestObj.questionIds.length) || 0;
             configTestTitle.textContent = selectedTestObj.title;
-            configTestDesc.textContent = `Test ID: ${selectedTestObj.id} | Contains ${poolCount} questions pool. Default session duration: ${selectedTestObj.duration || 15} minutes.`;
+            configTestDesc.textContent = `Test ID: ${selectedTestObj.id} | Contains ${poolCount} questions pool. Default duration: ${selectedTestObj.duration || 15} mins.`;
             switchScreen('config');
         };
 
-        cancelConfigBtn.onclick = () => {
-            switchScreen('setup');
-        };
+        cancelConfigBtn.onclick = () => switchScreen('setup');
 
         startTestBtn.onclick = () => {
             if (!selectedTestObj) return;
 
-            // Extract questions directly from embedded 'questions' array or resolve via ID pools
             let rawQuestions = [];
             if (Array.isArray(selectedTestObj.questions) && selectedTestObj.questions.length > 0) {
                 rawQuestions = selectedTestObj.questions;
             } else if (Array.isArray(selectedTestObj.questionIds)) {
-                // If test only contains questionIds, check global question storage or generate placeholders matching the IDs
                 let globalPool = {};
                 try {
                     const globalRaw = localStorage.getItem(STORAGE_KEY_QUESTIONS);
                     if (globalRaw) globalPool = JSON.parse(globalRaw);
                 } catch (err) {}
 
-                rawQuestions = selectedTestObj.questionIds.map((qid, idx) => {
+                rawQuestions = selectedTestObj.questionIds.map((qid) => {
                     if (globalPool[qid]) return globalPool[qid];
-                    // Fallback generated payload matching questionId if not in global registry
                     return {
                         question: `Question ID #${qid} (Architecture Assessment Item)`,
                         options: ["Option A Reference", "Option B Reference", "Option C Reference", "Option D Reference"],
@@ -777,10 +579,13 @@
 
         function startTimer() {
             clearInterval(state.timerInterval);
-            updateTimerDisplay();
+            const targetTime = Date.now() + (state.timerDuration * 1000);
+
             state.timerInterval = setInterval(() => {
-                state.timeRemaining--;
+                const now = Date.now();
+                state.timeRemaining = Math.max(0, Math.ceil((targetTime - now) / 1000));
                 updateTimerDisplay();
+
                 if (state.timeRemaining <= 0) {
                     clearInterval(state.timerInterval);
                     triggerAutoSubmission();
@@ -920,7 +725,6 @@
             });
 
             const accuracy = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
-            
             const elapsedSecs = Math.floor((state.endTime - state.startTime) / 1000);
             const m = Math.floor(elapsedSecs / 60).toString().padStart(2, '0');
             const s = (elapsedSecs % 60).toString().padStart(2, '0');
@@ -959,8 +763,8 @@
                 details.style.fontSize = '0.875rem';
                 details.style.color = 'var(--text-light)';
 
-                const userChoiceStr = isSkipped ? 'None (Skipped)' : q.options[userAns];
-                const correctChoiceStr = q.options[q.correct];
+                const userChoiceStr = isSkipped ? 'None (Skipped)' : escapeHtml(q.options[userAns]);
+                const correctChoiceStr = escapeHtml(q.options[q.correct]);
 
                 details.innerHTML = `Your Answer: <strong style="color:var(--text)">${userChoiceStr}</strong><br>Correct Answer: <strong style="color:var(--success)">${correctChoiceStr}</strong>`;
 
@@ -984,6 +788,14 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;');
         }
+
+        // Prevent accidental tab refresh during active test
+        window.addEventListener('beforeunload', (e) => {
+            if (screens.test.classList.contains('active')) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             renderRepositoryTable();

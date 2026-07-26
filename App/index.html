@@ -1,461 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Test Series Manager</title>
-
-<link rel="stylesheet" href="style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Exam Platform Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+   <style>
+        /* Add custom styling for sync overlay if not defined in style.css */
+        #syncOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .spinner {
+            width: 45px;
+            height: 45px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid var(--primary, #6366f1);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </head>
-
-
 <body>
 
-
-<div class="app">
-
-
-<!-- SIDEBAR -->
-
-<aside class="sidebar">
-
-<h2>📚 Test Admin</h2>
-
-
-<button onclick="showSection('dashboard')">
-Dashboard
-</button>
-
-
-<button onclick="showSection('subjects')">
-Subjects
-</button>
-
-
-<button onclick="showSection('topics')">
-Topics
-</button>
-
-
-<button onclick="showSection('modules')">
-Modules
-</button>
-
-
-<button onclick="showSection('tests')">
-Tests
-</button>
-
-
-<button onclick="showSection('mcqs')">
-MCQ Bank
-</button>
-
-
-<hr>
-
-
-<button onclick="exportData()">
-⬇ Backup
-</button>
-
-
-<button onclick="importData()">
-⬆ Restore
-</button>
-
-
-<input 
-type="file"
-id="importFile"
-hidden>
-
-
-</aside>
-
-
-
-
-<!-- MAIN CONTENT -->
-
-
-<main class="content">
-
-
-<header>
-
-<h1>
-Online Test Series Manager
-</h1>
-
-
-<input 
-id="searchBox"
-placeholder="Search..."
-onkeyup="searchData()">
-
-</header>
-
-
-
-
-
-<!-- DASHBOARD -->
-
-
-<section id="dashboard"
-class="section active">
-
-
-<h2>
-Dashboard
-</h2>
-
-
-<div class="stats">
-
-
-<div class="box">
-
-<h3 id="totalSubjects">
-0
-</h3>
-
-<p>
-Subjects
-</p>
-
+<!-- Syncing Modal Overlay -->
+<div id="syncOverlay">
+    <div class="spinner"></div>
+    <h3>Restoring data & results from Firebase Cloud...</h3>
+    <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 6px;">Please wait standard initialization...</p>
 </div>
 
+<div class="container">
+    <header class="glass">
+        <div class="brand">
+            <div class="brand-icon">📐</div>
+            <div class="brand-text">
+                <h2>Master Platform</h2>
+                <p>Central Directory Dashboard</p>
+            </div>
+        </div>
+        <div class="badge-status">
+            <div class="pulse-dot"></div>
+            Cloud Auto-Sync Active
+        </div>
+    </header>
 
+    <div class="hero glass">
+        <div class="hero-content">
+            <span class="hero-tag">Folder Directory Hub</span>
+            <h1>Architecture & Assessment Control Center</h1>
+            <p>Direct relative links mapped to your local HTML folder architecture. Cloud state will automatically restore on first link navigation.</p>
+        </div>
+    </div>
 
-<div class="box">
+    <div class="stats-grid">
+        <div class="stat-card glass">
+            <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: var(--primary);">📝</div>
+            <div class="stat-info">
+                <h3 id="statTests">--</h3>
+                <p>Active Tests</p>
+            </div>
+        </div>
+        <div class="stat-card glass">
+            <div class="stat-icon" style="background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan);">📚</div>
+            <div class="stat-info">
+                <h3 id="statSubjects">--</h3>
+                <p>Subjects</p>
+            </div>
+        </div>
+        <div class="stat-card glass">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">📦</div>
+            <div class="stat-info">
+                <h3 id="statModules">--</h3>
+                <p>Modules</p>
+            </div>
+        </div>
+        <div class="stat-card glass">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);">⚡</div>
+            <div class="stat-info">
+                <h3 id="statQuestions">--</h3>
+                <p>Question Pool</p>
+            </div>
+        </div>
+    </div>
 
-<h3 id="totalTests">
-0
-</h3>
+    <h2 class="section-title"><span>⚡</span> Local App Directory Routes</h2>
+    <div class="nav-grid">
 
-<p>
-Tests
-</p>
+        <!-- 1. Test Folder -->
+        <div class="nav-card glass theme-indigo">
+            <div>
+                <div class="nav-header">
+                    <div class="nav-icon">🛠️</div>
+                    <span class="badge-count">5 Files</span>
+                </div>
+                <div class="nav-body">
+                    <h3>Test Directory</h3>
+                    <p>Build, schedule, execute, and analyze examinations.</p>
+                </div>
+            </div>
+            <div class="link-group">
+                <a href="test/builder.html" class="nav-btn auto-sync-link">
+                    <span>Test Builder</span> <span class="path-hint">test/builder.html ➔</span>
+                </a>
+                <a href="test/master-test.html" class="nav-btn auto-sync-link">
+                    <span>Master Test</span> <span class="path-hint">test/master-test.html ➔</span>
+                </a>
+                <a href="test/test-manager.html" class="nav-btn auto-sync-link">
+                    <span>Test Manager</span> <span class="path-hint">test/test-manager.html ➔</span>
+                </a>
+                <a href="test/test.html" class="nav-btn auto-sync-link">
+                    <span>Take Test</span> <span class="path-hint">test/test.html ➔</span>
+                </a>
+                <a href="test/result.html" class="nav-btn auto-sync-link">
+                    <span>Test Results</span> <span class="path-hint">test/result.html ➔</span>
+                </a>
+            </div>
+        </div>
 
+        <!-- 2. Question Folder -->
+        <div class="nav-card glass theme-rose">
+            <div>
+                <div class="nav-header">
+                    <div class="nav-icon">❓</div>
+                    <span class="badge-count">2 Files</span>
+                </div>
+                <div class="nav-body">
+                    <h3>Question Directory</h3>
+                    <p>Manage question pools and view analytical performance.</p>
+                </div>
+            </div>
+            <div class="link-group">
+                <a href="question/index.html" class="nav-btn auto-sync-link">
+                    <span>Question Manager</span> <span class="path-hint">question/index.html ➔</span>
+                </a>
+                <a href="question/analytics.html" class="nav-btn auto-sync-link">
+                    <span>Question Analytics</span> <span class="path-hint">question/analytics.html ➔</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 3. Topic Folder -->
+        <div class="nav-card glass theme-cyan">
+            <div>
+                <div class="nav-header">
+                    <div class="nav-icon">📁</div>
+                    <span class="badge-count">1 File</span>
+                </div>
+                <div class="nav-body">
+                    <h3>Topic Directory</h3>
+                    <p>Organize subject topics for test assembly.</p>
+                </div>
+            </div>
+            <div class="link-group">
+                <a href="topic/index.html" class="nav-btn auto-sync-link">
+                    <span>Topic Index</span> <span class="path-hint">topic/index.html ➔</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 4. Module Folder -->
+        <div class="nav-card glass theme-emerald">
+            <div>
+                <div class="nav-header">
+                    <div class="nav-icon">📦</div>
+                    <span class="badge-count">1 File</span>
+                </div>
+                <div class="nav-body">
+                    <h3>Module Directory</h3>
+                    <p>Group topics into distinct testing modules.</p>
+                </div>
+            </div>
+            <div class="link-group">
+                <a href="module/index.html" class="nav-btn auto-sync-link">
+                    <span>Module Index</span> <span class="path-hint">module/index.html ➔</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 5. Admin Folder -->
+        <div class="nav-card glass theme-amber">
+            <div>
+                <div class="nav-header">
+                    <div class="nav-icon">🛡️</div>
+                    <span class="badge-count">1 File</span>
+                </div>
+                <div class="nav-body">
+                    <h3>Admin Directory</h3>
+                    <p>Database controls and system settings.</p>
+                </div>
+            </div>
+            <div class="link-group">
+                <a href="admin/admin.html" class="nav-btn auto-sync-link">
+                    <span>Admin Panel</span> <span class="path-hint">admin/admin.html ➔</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
 </div>
 
-
-
-
-<div class="box">
-
-<h3 id="totalMCQ">
-0
-</h3>
-
-<p>
-Questions
-</p>
-
-</div>
-
-
-</div>
-
-
-
-<div id="dashboardData"></div>
-
-
-</section>
-
-
-
-
-
-<!-- SUBJECT -->
-
-<section id="subjects"
-class="section">
-
-
-<h2>
-Manage Subjects
-</h2>
-
-
-<div class="form">
-
-
-<input
-id="subjectInput"
-placeholder="Enter subject name">
-
-
-<button onclick="saveSubject()">
-Save Subject
-</button>
-
-
-</div>
-
-
-<div id="subjectList"></div>
-
-
-</section>
-
-
-
-
-
-
-
-<!-- TOPIC -->
-
-
-<section id="topics"
-class="section">
-
-
-<h2>
-Manage Topics
-</h2>
-
-
-<div class="form">
-
-
-<select id="topicSubjectSelect"></select>
-
-
-<input
-id="topicInput"
-placeholder="Topic name">
-
-
-<button onclick="saveTopic()">
-Save Topic
-</button>
-
-
-</div>
-
-
-
-<div id="topicList"></div>
-
-
-</section>
-
-
-
-
-
-
-
-
-<!-- MODULE -->
-
-
-<section id="modules"
-class="section">
-
-
-<h2>
-Manage Modules
-</h2>
-
-
-
-<div class="form">
-
-
-<select id="moduleSubjectSelect"></select>
-
-
-<select id="moduleTopicSelect"></select>
-
-
-
-<input
-id="moduleInput"
-placeholder="Module name">
-
-
-<button onclick="saveModule()">
-Save Module
-</button>
-
-
-</div>
-
-
-
-<div id="moduleList"></div>
-
-
-</section>
-
-
-
-
-
-
-
-
-
-<!-- TEST -->
-
-
-<section id="tests"
-class="section">
-
-
-<h2>
-Manage Tests
-</h2>
-
-
-
-<div class="form">
-
-
-<select id="testSubjectSelect"></select>
-
-
-<select id="testTopicSelect"></select>
-
-
-<select id="testModuleSelect"></select>
-
-
-
-<input
-id="testInput"
-placeholder="Test name">
-
-
-<input
-id="testDuration"
-placeholder="Duration minutes"
-type="number">
-
-
-
-<button onclick="saveTest()">
-Create Test
-</button>
-
-
-</div>
-
-
-
-<div id="testList"></div>
-
-
-</section>
-
-
-
-
-
-
-
-
-
-<!-- MCQ -->
-
-<section id="mcqs"
-class="section">
-
-
-<h2>
-MCQ Manager
-</h2>
-
-
-<div class="form">
-
-
-<select id="mcqTestSelect"></select>
-
-
-
-<textarea
-id="questionInput"
-placeholder="Question">
-</textarea>
-
-
-
-<input id="option1"
-placeholder="Option A">
-
-
-<input id="option2"
-placeholder="Option B">
-
-
-<input id="option3"
-placeholder="Option C">
-
-
-<input id="option4"
-placeholder="Option D">
-
-
-<select id="answerSelect">
-
-<option>
-A
-</option>
-
-<option>
-B
-</option>
-
-<option>
-C
-</option>
-
-<option>
-D
-</option>
-
-</select>
-
-
-
-<button onclick="saveMCQ()">
-Save Question
-</button>
-
-
-</div>
-
-
-
-<div id="mcqList"></div>
-
-
-</section>
-
-
-
-
-</main>
-
-
-</div>
-
-
-
-<script src="app.js"></script>
-
+<footer>
+    Master Test Directory Dashboard
+</footer>
+
+<!-- FIREBASE SDK & AUTO RESTORE CONTROLLER -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCSwr1mbjcFhjeWCoZIipb5TE3o0jLkU7M",
+      authDomain: "quiz-43b3e.firebaseapp.com",
+      projectId: "quiz-43b3e",
+      storageBucket: "quiz-43b3e.appspot.com",
+      messagingSenderId: "477037762591",
+      appId: "1:477037762591:web:03478c214a0477ff819d2a"
+    };
+
+    const DB_KEY = "testSeriesDB";
+    const RESULTS_DB_KEY = "testSeriesResultsDB";
+    const STORAGE_KEY_QUESTIONS = "masterQuestionsDB";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const userId = "default_user";
+
+    async function restoreCloudDatabases() {
+        try {
+            const docRef = doc(db, "backups", userId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const firestoreData = docSnap.data();
+                
+                if (firestoreData[DB_KEY]) {
+                    localStorage.setItem(DB_KEY, JSON.stringify(firestoreData[DB_KEY]));
+                }
+
+                if (firestoreData[RESULTS_DB_KEY]) {
+                    localStorage.setItem(RESULTS_DB_KEY, JSON.stringify(firestoreData[RESULTS_DB_KEY]));
+                }
+
+                if (firestoreData[STORAGE_KEY_QUESTIONS]) {
+                    localStorage.setItem(STORAGE_KEY_QUESTIONS, JSON.stringify(firestoreData[STORAGE_KEY_QUESTIONS]));
+                }
+
+                sessionStorage.setItem("hasRestoredFromCloud", "true");
+                console.log("Automated Cloud Restore of all databases Successful.");
+            }
+        } catch (error) {
+            console.error("Auto Restore Failed:", error);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const links = document.querySelectorAll(".auto-sync-link");
+        const overlay = document.getElementById("syncOverlay");
+
+        links.forEach(link => {
+            link.addEventListener("click", async (e) => {
+                const destination = link.getAttribute("href");
+                
+                if (!sessionStorage.getItem("hasRestoredFromCloud")) {
+                    e.preventDefault();
+                    overlay.style.display = "flex";
+                    
+                    await restoreCloudDatabases();
+                    
+                    window.location.href = destination;
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    function loadDashboardMetrics() {
+        try {
+            const raw = localStorage.getItem("testSeriesDB");
+            if (!raw) return;
+
+            const db = JSON.parse(raw);
+            
+            let totalSubjects = db.subjects ? db.subjects.length : 0;
+            let totalModules = 0;
+            let totalQuestions = 0;
+            let totalTests = 0;
+
+            if (db.subjects && Array.isArray(db.subjects)) {
+                db.subjects.forEach(sub => {
+                    if (sub.topics && Array.isArray(sub.topics)) {
+                        sub.topics.forEach(topic => {
+                            if (topic.modules && Array.isArray(topic.modules)) {
+                                totalModules += topic.modules.length;
+                                topic.modules.forEach(mod => {
+                                    if (mod.questions && Array.isArray(mod.questions)) {
+                                        totalQuestions += mod.questions.length;
+                                    }
+                                    if (mod.tests && Array.isArray(mod.tests)) {
+                                        totalTests += mod.tests.length;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
+            if (totalTests === 0 && db.tests && Array.isArray(db.tests)) {
+                totalTests = db.tests.length;
+            }
+
+            document.getElementById("statTests").textContent = totalTests;
+            document.getElementById("statSubjects").textContent = totalSubjects;
+            document.getElementById("statModules").textContent = totalModules;
+            document.getElementById("statQuestions").textContent = totalQuestions;
+
+        } catch (e) {
+            console.warn("Could not load metrics:", e);
+        }
+    }
+
+    window.onload = loadDashboardMetrics;
+</script>
 
 </body>
-
 </html>

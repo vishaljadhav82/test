@@ -4,347 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced Master Architecture Test Builder</title>
+    <link rel="stylesheet" href="builder.css">
     <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --secondary: #64748b;
-            --bg-body: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --border-color: #cbd5e1;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            padding: 16px;
-        }
-
-        @media (min-width: 768px) {
-            body { padding: 24px; }
-        }
-
-        .container {
-            max-width: 1320px;
-            margin: 0 auto;
-        }
-
-        .top-banner {
-            background: linear-gradient(135deg, #4f46e5, #4338ca);
-            color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .top-banner h1 {
-            font-size: 1.4rem;
-            margin-bottom: 4px;
-        }
-
-        .btn {
-            background-color: white;
-            color: var(--primary);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: background 0.2s;
-            text-decoration: none;
-            width: 100%;
-        }
-
-        @media (min-width: 576px) {
-            .btn { width: auto; }
-        }
-
-        .btn:hover { background-color: #f1f5f9; }
-        .btn-primary { background-color: var(--primary); color: white; }
-        .btn-primary:hover { background-color: var(--primary-hover); }
-        .btn-danger { background-color: var(--danger); color: white; }
-        .btn-danger:hover { background-color: #dc2626; }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        @media (min-width: 768px) {
-            .card { padding: 20px; }
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
-        }
-
-        @media (min-width: 768px) {
-            .grid-2 { grid-template-columns: 1fr 1fr; gap: 20px; }
-        }
-
-        .toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            min-width: 650px;
-        }
-
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.9rem;
-        }
-
-        th {
-            background-color: #f1f5f9;
-            font-weight: 600;
-        }
-
-        tr:hover { background-color: #f8fafc; }
-
-        .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: #e0e7ff;
-            color: var(--primary);
-            display: inline-block;
-        }
-
-        .badge-success { background: #d1fae5; color: #065f46; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            display: none;
-            padding: 10px;
-        }
-
-        .modal-card {
-            background: white;
-            width: 100%;
-            max-width: 1050px;
-            height: 92vh;
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .modal-header {
-            padding: 14px 16px;
-            background: var(--primary);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-body {
-            padding: 16px;
-            overflow-y: auto;
-            flex-grow: 1;
-        }
-
-        .modal-footer {
-            padding: 12px 16px;
-            background: #f8fafc;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column-reverse;
-            gap: 10px;
-        }
-
-        @media (min-width: 576px) {
-            .modal-footer { flex-direction: row; justify-content: flex-end; }
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 0.95rem;
-        }
-
-        .architecture-selector-box {
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 12px;
-            background: #fcfcfc;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .arch-subject-block {
-            margin-bottom: 10px;
-            border-bottom: 1px dashed #e2e8f0;
-            padding-bottom: 8px;
-        }
-
-        .arch-topics-container {
-            margin-left: 14px;
-            margin-top: 6px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .arch-modules-container {
-            margin-left: 20px;
-            margin-top: 4px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .question-picker-list {
-            max-height: 320px;
-            overflow-y: auto;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 10px;
-            background: #fcfcfc;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .question-card-item {
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 12px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .q-card-content { flex-grow: 1; }
-        .q-card-text { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; }
-        
-        .q-meta-strip {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 8px;
-        }
-
-        .q-card-options {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 4px;
-            margin-bottom: 6px;
-            background: #f8fafc;
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid #e2e8f0;
-        }
-
-        @media (min-width: 640px) {
-            .q-card-options { grid-template-columns: 1fr 1fr; }
-        }
-
-        .q-option-preview {
-            font-size: 0.85rem;
-            color: #475569;
-        }
-
-        .q-option-preview.correct-option {
-            color: #047857;
-            font-weight: 700;
-            background: #d1fae5;
-            padding: 2px 6px;
-            border-radius: 4px;
-            display: inline-block;
-        }
+       
     </style>
 </head>
 <body>
 
 <div class="container">
+
+    <!-- GLOBAL NAVIGATION HEADER -->
+    <header class="app-header">
+        <ul class="nav-links">
+            <li class="nav-group">
+                <span class="nav-group-label">Test:</span>
+                <a href="../test/builder.html" class="active">Builder</a>
+                <a href="../test/master-test.html">Master Test</a>
+                <a href="../test/result.html">Result</a>
+                <a href="../test/test.html">Test</a>
+                <a href="../test/test-manager.html">Manager</a>
+            </li>
+            <li class="nav-group">
+                <span class="nav-group-label">Topic:</span>
+                <a href="../topic/index.html">Index</a>
+            </li>
+            <li class="nav-group">
+                <span class="nav-group-label">Admin:</span>
+                <a href="../admin/admin.html">Admin</a>
+            </li>
+            <li class="nav-group">
+                <span class="nav-group-label">Module:</span>
+                <a href="../module/index.html">Index</a>
+            </li>
+            <li class="nav-group">
+                <span class="nav-group-label">Question:</span>
+                <a href="../question/index.html">Index</a>
+                <a href="../question/analytics.html">Analytics</a>
+            </li>
+        </ul>
+    </header>
+
     <div class="top-banner">
         <div>
             <h1>🌐 Master Architecture Test Suite (testSeriesDB)</h1>
             <p>Saves Subject, Topic, Module hierarchy, and complete questions array directly for reliable rendering.</p>
         </div>
-        <button class="btn btn-danger" onclick="clearTestSeriesDatabase()" style="width: auto;">Reset testSeriesDB</button>
+        <button class="btn btn-danger" onclick="clearTestSeriesDatabase()" style="width: auto;">🔒 Reset testSeriesDB</button>
     </div>
 
     <!-- EXPORT & IMPORT MANAGEMENT TOOLBAR -->
     <div class="card" style="background: #f1f5f9; margin-bottom: 20px;">
-        <h3 style="font-size: 1rem; margin-bottom: 12px;">💾 Database Backup & Export / Import</h3>
-        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-            <!-- Test Series DB Actions -->
+        <h3 style="font-size: 1rem; margin-bottom: 12px;">💾 Database Backup & Cloud Sync</h3>
+        
+        <!-- Local JSON Actions -->
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
             <button class="btn btn-primary" onclick="exportDatabase('testSeriesDB', 'testSeriesDB_backup.json')">Export testSeriesDB JSON</button>
             <label class="btn" style="background: white; border: 1px solid var(--border-color); cursor: pointer; margin-bottom: 0;">
                 Import testSeriesDB <input type="file" accept=".json" style="display: none;" onchange="importDatabase(event, 'testSeriesDB')">
             </label>
 
-            <!-- Results DB Actions -->
             <button class="btn btn-primary" onclick="exportDatabase('savedTestResultsDB', 'savedTestResultsDB_backup.json')">Export Results JSON</button>
             <label class="btn" style="background: white; border: 1px solid var(--border-color); cursor: pointer; margin-bottom: 0;">
                 Import Results <input type="file" accept=".json" style="display: none;" onchange="importDatabase(event, 'savedTestResultsDB')">
             </label>
+        </div>
+
+        <!-- Firebase Firestore Cloud Sync -->
+        <div class="backup-section">
+            <h4 style="font-size: 0.85rem; color: var(--secondary); margin-bottom: 8px;">🔥 Firebase Cloud Backup / Restore (Password Protected)</h4>
+            
+            <!-- Combined Actions -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+                <button class="btn btn-firebase" style="background: #2e7d32; color: white;" onclick="backupAllDatabasesToFirebase()">⚡ Backup ALL Databases ➔ Cloud</button>
+                <button class="btn" style="background: #e8f5e9; border: 1px solid #2e7d32; color: #2e7d32; font-weight: bold;" onclick="restoreAllDatabasesFromFirebase()">⚡ Restore ALL Databases  Cloud</button>
+            </div>
+
+            <!-- Individual Actions -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-firebase" onclick="backupToFirebase('testSeriesDB', 'testSeriesDB_backups')">Backup testSeriesDB ➔ Cloud</button>
+                <button class="btn" style="background: white; border: 1px solid var(--border-color);" onclick="restoreFromFirebase('testSeriesDB', 'testSeriesDB_backups')">Restore testSeriesDB  Cloud</button>
+                <button class="btn btn-firebase" onclick="backupToFirebase('savedTestResultsDB', 'resultsDB_backups')">Backup Results ➔ Cloud</button>
+                <button class="btn" style="background: white; border: 1px solid var(--border-color);" onclick="restoreFromFirebase('savedTestResultsDB', 'resultsDB_backups')">Restore Results  Cloud</button>
+            </div>
         </div>
     </div>
 
@@ -413,6 +154,128 @@
         </div>
     </div>
 </div>
+
+<!-- FIREBASE SDK INGESTION -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCSwr1mbjcFhjeWCoZIipb5TE3o0jLkU7M",
+      authDomain: "quiz-43b3e.firebaseapp.com",
+      projectId: "quiz-43b3e",
+      storageBucket: "quiz-43b3e.appspot.com",
+      messagingSenderId: "477037762591",
+      appId: "1:477037762591:web:03478c214a0477ff819d2a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Hardcoded password configuration
+    const APP_ACTION_PASSWORD = "mysecretpassword"; 
+
+    // Helper function to handle password check
+    window.verifyAdminPassword = function() {
+        const userInput = prompt("🔒 Enter admin password to perform this action:");
+        if (userInput === null) {
+            return false;
+        }
+        if (userInput !== APP_ACTION_PASSWORD) {
+            alert("❌ Incorrect password. Action cancelled.");
+            return false;
+        }
+        return true;
+    };
+
+    // Firebase Cloud Sync handlers
+    window.backupToFirebase = async function(storageKey, collectionName, skipPassword = false) {
+        if (!skipPassword && !window.verifyAdminPassword()) return false;
+
+        const rawData = localStorage.getItem(storageKey);
+        if (!rawData) {
+            if (!skipPassword) alert(`No local data found in ${storageKey} to backup.`);
+            return false;
+        }
+
+        try {
+            const parsedData = JSON.parse(rawData);
+            await setDoc(doc(db, collectionName, "backup_latest"), {
+                data: parsedData,
+                updatedAt: new Date().toISOString()
+            });
+            if (!skipPassword) alert(`Successfully backed up ${storageKey} to Firebase Firestore!`);
+            return true;
+        } catch (error) {
+            console.error("Firebase Backup Error:", error);
+            if (!skipPassword) alert(`Backup failed for ${storageKey}: ${error.message}`);
+            return false;
+        }
+    };
+
+    window.restoreFromFirebase = async function(storageKey, collectionName, skipPassword = false, skipConfirm = false) {
+        if (!skipPassword && !window.verifyAdminPassword()) return false;
+
+        if (!skipConfirm && !confirm(`⚠️ Are you sure you want to restore ${storageKey}? This will overwrite your current browser data!`)) {
+            return false;
+        }
+
+        try {
+            const docRef = doc(db, collectionName, "backup_latest");
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const payload = docSnap.data().data;
+                localStorage.setItem(storageKey, JSON.stringify(payload));
+                if (!skipPassword) alert(`Successfully restored ${storageKey} from Firebase Cloud!`);
+
+                if (storageKey === 'testSeriesDB' && typeof renderMasterTestsTable === 'function') {
+                    renderMasterTestsTable();
+                }
+                return true;
+            } else {
+                if (!skipPassword) alert(`No backup document found in Cloud for ${collectionName}.`);
+                return false;
+            }
+        } catch (error) {
+            console.error("Firebase Restore Error:", error);
+            if (!skipPassword) alert(`Restore failed for ${storageKey}: ${error.message}`);
+            return false;
+        }
+    };
+
+    // COMBINED BACKUP FOR ALL DATABASES
+    window.backupAllDatabasesToFirebase = async function() {
+        if (!window.verifyAdminPassword()) return;
+
+        const res1 = await window.backupToFirebase('testSeriesDB', 'testSeriesDB_backups', true);
+        const res2 = await window.backupToFirebase('savedTestResultsDB', 'resultsDB_backups', true);
+
+        if (res1 || res2) {
+            alert("✅ Backup Complete!\nBoth testSeriesDB and savedTestResultsDB were backed up to Cloud.");
+        } else {
+            alert("⚠️ Backup process completed, but no local data was available to store.");
+        }
+    };
+
+    // COMBINED RESTORE FOR ALL DATABASES
+    window.restoreAllDatabasesFromFirebase = async function() {
+        if (!window.verifyAdminPassword()) return;
+
+        if (!confirm("⚠️ Are you sure you want to restore ALL databases? This will overwrite local browser data for both testSeriesDB and savedTestResultsDB!")) {
+            return;
+        }
+
+        const res1 = await window.restoreFromFirebase('testSeriesDB', 'testSeriesDB_backups', true, true);
+        const res2 = await window.restoreFromFirebase('savedTestResultsDB', 'resultsDB_backups', true, true);
+
+        if (res1 || res2) {
+            alert("✅ Restore Complete!\nDatabases successfully pulled from Firebase Cloud.");
+        } else {
+            alert("❌ Restore failed or no cloud backups were found.");
+        }
+    };
+</script>
 
 <script>
     const STANDARD_DB_KEY = "testSeriesDB";
@@ -691,9 +554,14 @@
     }
 
     function clearTestSeriesDatabase() {
-        if (confirm("Warning: This will clear all tests from testSeriesDB. Proceed?")) {
+        if (typeof window.verifyAdminPassword === 'function' && !window.verifyAdminPassword()) {
+            return;
+        }
+
+        if (confirm("⚠️ Final Confirmation: Are you sure you want to clear all tests from testSeriesDB?")) {
             localStorage.removeItem(STANDARD_DB_KEY);
             renderMasterTestsTable();
+            alert("testSeriesDB has been reset.");
         }
     }
 
