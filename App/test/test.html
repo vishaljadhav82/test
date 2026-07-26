@@ -15,118 +15,418 @@
 </head>
 <body>
 
+<nav class="navbar">
+
+    <div class="nav-container">
+
+        <a href="../test/master-test.html" class="logo">
+            🎓 Master Test Portal
+        </a>
+
+        <button class="menu-btn" id="menuBtn">
+            ☰
+        </button>
+
+        <div class="nav-links" id="navLinks">
+
+            <div class="nav-section">
+                <div class="nav-title">Test</div>
+
+                <a href="../test/master-test.html" class="active">
+                    Master
+                </a>
+
+                <a href="../test/builder.html">
+                    Builder
+                </a>
+
+                <a href="../test/test-manager.html">
+                    Manager
+                </a>
+
+                <a href="../test/test.html">
+                    Runner
+                </a>
+
+                <a href="../test/result.html">
+                    Results
+                </a>
+
+            </div>
+
+            <div class="nav-section">
+
+                <div class="nav-title">
+                    Topic
+                </div>
+
+                <a href="../topic/index.html">
+                    Index
+                </a>
+
+            </div>
+
+            <div class="nav-section">
+
+                <div class="nav-title">
+                    Module
+                </div>
+
+                <a href="../module/index.html">
+                    Index
+                </a>
+
+            </div>
+
+            <div class="nav-section">
+
+                <div class="nav-title">
+                    Question
+                </div>
+
+                <a href="../question/index.html">
+                    Index
+                </a>
+
+                <a href="../question/analytics.html">
+                    Analytics
+                </a>
+
+            </div>
+
+            <div class="nav-section">
+
+                <div class="nav-title">
+                    Admin
+                </div>
+
+                <a href="../admin/admin.html">
+                    Admin
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<div class="page">
+
 <div class="container">
-    <!-- Selection Screen -->
-    <div id="selectionScreen" class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h1>Select a Test to Take</h1>
-            <div style="display: flex; gap: 8px;">
-                <button class="btn btn-secondary" onclick="openModal('backupModal')">Backup/Restore</button>
-                <a href="dashboard.html" class="btn btn-secondary">Dashboard</a>
-            </div>
-        </div>
 
-        <div id="shareBanner" class="share-banner hidden">
-            <span>Direct Test Link Applied!</span>
-            <button class="btn" style="padding: 2px 8px; font-size: 0.75rem;" onclick="copyDirectLink()">Copy Share Link</button>
-        </div>
+<!-- ========================= -->
 
-        <p>Enter your full name and choose Subject, Topic, Module, and Test sequentially:</p>
-        
-        <div class="form-group">
-            <label for="userFullName">Full Name</label>
-            <input type="text" id="userFullName" placeholder="Enter your full name" required oninput="checkFormValidity()">
-        </div>
+<div id="selectionScreen" class="card">
 
-        <div class="form-group">
-            <label for="subjectSelect">Subject</label>
-            <select id="subjectSelect" onchange="onSubjectChange()">
-                <option value="">-- Select Subject --</option>
-            </select>
-        </div>
+<div class="card-header">
 
-        <div class="form-group">
-            <label for="topicSelect">Topic</label>
-            <select id="topicSelect" onchange="onTopicChange()" disabled>
-                <option value="">-- Select Topic --</option>
-            </select>
-        </div>
+<div>
 
-        <div class="form-group">
-            <label for="moduleSelect">Module</label>
-            <select id="moduleSelect" onchange="onModuleChange()" disabled>
-                <option value="">-- Select Module --</option>
-            </select>
-        </div>
+<h1>Select Test</h1>
 
-        <div class="form-group">
-            <label for="testSelect">Test</label>
-            <select id="testSelect" onchange="checkFormValidity()" disabled>
-                <option value="">-- Select Test --</option>
-            </select>
-        </div>
+<p>
+Choose Subject, Topic, Module and Test
+</p>
 
-        <button class="btn" id="startTestBtn" onclick="startTest()" disabled>Start Test</button>
-    </div>
-
-    <!-- Active Test Screen -->
-    <div id="testScreen" class="card hidden">
-        <header>
-            <div>
-                <h2 id="activeTestTitle" style="margin-bottom: 4px;">Test Title</h2>
-                <span id="candidateNameDisplay" style="font-size: 0.9rem; color: #6b7280; font-weight: 600;"></span>
-            </div>
-            <div class="timer" id="timerDisplay">Time Left: 15:00</div>
-        </header>
-        <form id="testForm" onsubmit="submitTest(event)">
-            <div id="questionsContainer"></div>
-            <button type="submit" class="btn btn-success">Submit Test</button>
-        </form>
-    </div>
-
-    <!-- Result Screen -->
-    <div id="resultScreen" class="card hidden">
-        <div class="results-box">
-            <h2>Test Submitted Successfully!</h2>
-            <p id="resultCandidateName" style="font-weight: 600; color: #4b5563;"></p>
-            <p>Your Score:</p>
-            <div class="score-display" id="scoreDisplay">0 / 0</div>
-            <p id="resultFeedback"></p>
-            
-            <div id="detailedReviewContainer" style="margin-top: 20px;"></div>
-
-            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
-                <button class="btn" onclick="resetToSelection()">Take Another Test</button>
-                <a href="dashboard.html" class="btn btn-secondary">Go to Dashboard</a>
-            </div>
-        </div>
-    </div>
 </div>
 
-<!-- Password-Protected Backup & Restore Modal -->
-<div id="backupModal" class="modal hidden">
-    <div class="modal-content">
-        <h3>Backup / Restore Data</h3>
-        <p style="font-size: 0.85rem; color: #6b7280;">Secure your test structure and results with AES encryption.</p>
-        
-        <div class="form-group">
-            <label for="backupPassword">Encryption Password</label>
-            <input type="password" id="backupPassword" placeholder="Enter security password">
-        </div>
+<div class="top-buttons">
 
-        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
-            <button class="btn" onclick="exportEncryptedBackup()">Download Encrypted Backup</button>
-            <hr style="width:100%; border:0; border-top: 1px solid var(--border-color);">
-            <div class="form-group">
-                <label>Restore From File</label>
-                <input type="file" id="restoreFileSelect" accept=".json">
-            </div>
-            <button class="btn btn-success" onclick="importEncryptedBackup()">Decrypt & Restore Data</button>
-            <button class="btn btn-secondary" onclick="closeModal('backupModal')">Cancel</button>
-        </div>
-    </div>
+<button
+class="btn btn-secondary"
+onclick="openModal('backupModal')">
+
+Backup
+
+</button>
+
+<a
+href="dashboard.html"
+class="btn btn-secondary">
+
+Dashboard
+
+</a>
+
 </div>
 
+</div>
+
+<div id="shareBanner" class="share-banner hidden">
+
+<span>
+
+✅ Direct Test Link Loaded
+
+</span>
+
+<button
+class="btn"
+onclick="copyDirectLink()">
+
+Copy Link
+
+</button>
+
+</div>
+
+<div class="grid">
+
+<div class="form-group">
+
+<label>
+
+Full Name
+
+</label>
+
+<input
+type="text"
+id="userFullName"
+placeholder="Enter Full Name"
+required
+oninput="checkFormValidity()">
+
+</div>
+
+<div class="form-group">
+
+<label>
+
+Subject
+
+</label>
+
+<select
+id="subjectSelect"
+onchange="onSubjectChange()">
+
+<option value="">
+
+Select Subject
+
+</option>
+
+</select>
+
+</div>
+
+<div class="form-group">
+
+<label>
+
+Topic
+
+</label>
+
+<select
+id="topicSelect"
+disabled
+onchange="onTopicChange()">
+
+<option>
+
+Select Topic
+
+</option>
+
+</select>
+
+</div>
+
+<div class="form-group">
+
+<label>
+
+Module
+
+</label>
+
+<select
+id="moduleSelect"
+disabled
+onchange="onModuleChange()">
+
+<option>
+
+Select Module
+
+</option>
+
+</select>
+
+</div>
+
+<div class="form-group">
+
+<label>
+
+Test
+
+</label>
+
+<select
+id="testSelect"
+disabled
+onchange="checkFormValidity()">
+
+<option>
+
+Select Test
+
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+<div class="action-center">
+
+<button
+class="btn btn-success start-btn"
+id="startTestBtn"
+disabled
+onclick="startTest()">
+
+🚀 Start Test
+
+</button>
+
+</div>
+
+</div>
+
+<!-- TEST SCREEN -->
+<div id="testScreen" class="card hidden">
+
+<header class="test-header">
+
+<div>
+
+<h2 id="activeTestTitle">
+
+Test
+
+</h2>
+
+<p id="candidateNameDisplay"></p>
+
+</div>
+
+<div
+class="timer"
+id="timerDisplay">
+
+00:00
+
+</div>
+
+</header>
+
+<form
+id="testForm"
+onsubmit="submitTest(event)">
+
+<div
+id="questionsContainer">
+
+</div>
+
+<div class="submit-area">
+
+<button
+type="submit"
+class="btn btn-success">
+
+Submit Test
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+<!-- RESULT SCREEN -->
+
+<div
+id="resultScreen"
+class="card hidden">
+
+<div class="result-box">
+
+<h2>
+
+🎉 Test Submitted
+
+</h2>
+
+<p id="resultCandidateName"></p>
+
+<div
+class="score-display"
+id="scoreDisplay">
+
+0 / 0
+
+</div>
+
+<p
+id="resultFeedback">
+
+</p>
+
+<div
+id="detailedReviewContainer">
+
+</div>
+
+<div class="result-buttons">
+
+<button
+class="btn"
+onclick="resetToSelection()">
+
+Take Another Test
+
+</button>
+
+<a
+href="dashboard.html"
+class="btn btn-secondary">
+
+Dashboard
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<script>
+const menuBtn = document.getElementById("menuBtn");
+const navLinks = document.getElementById("navLinks");
+
+menuBtn.addEventListener("click", () => {
+    navLinks.classList.toggle("show");
+});
+
+document.querySelectorAll(".nav-links a").forEach(link => {
+    link.addEventListener("click", () => {
+        navLinks.classList.remove("show");
+    });
+});
+</script>
 <script>
     // Config Keys
     const DB_KEY = "testSeriesDB";
