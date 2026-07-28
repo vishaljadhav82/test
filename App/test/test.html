@@ -757,6 +757,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 
     function submitTest(event) {
         event.preventDefault();
+        await restoreResultsDB();
         clearInterval(timerInterval);
 
         let testQuestions = [];
@@ -806,7 +807,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
         };
 
         saveResultToDB(testResultRecord);
-
+await backupResultsDB();
         document.getElementById("testScreen").classList.add("hidden");
         document.getElementById("resultScreen").classList.remove("hidden");
 
@@ -928,13 +929,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
     }
 
     window.onload = initSelectionScreen;
-</script>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
-<script>
 // ==========================
 // Firebase Initialization
 // ==========================
