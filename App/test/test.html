@@ -757,7 +757,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 
     function submitTest(event) {
         event.preventDefault();
-        await restoreResultsDB();
+       
         clearInterval(timerInterval);
 
         let testQuestions = [];
@@ -807,7 +807,7 @@ document.querySelectorAll(".nav-links a").forEach(link => {
         };
 
         saveResultToDB(testResultRecord);
-await backupResultsDB();
+
         document.getElementById("testScreen").classList.add("hidden");
         document.getElementById("resultScreen").classList.remove("hidden");
 
@@ -930,104 +930,6 @@ await backupResultsDB();
 
     window.onload = initSelectionScreen;
 
-// ==========================
-// Firebase Initialization
-// ==========================
-const firebaseConfig = {
-    apiKey: "AIzaSyCSwr1mbjcFhjeWCoZIipb5TE3o0jLkU7M",
-    authDomain: "quiz-43b3e.firebaseapp.com",
-    projectId: "quiz-43b3e",
-    storageBucket: "quiz-43b3e.appspot.com",
-    messagingSenderId: "477037762591",
-    appId: "1:477037762591:web:03478c214a0477ff819d2a"
-};
-
-// Prevent "Firebase App named '[DEFAULT]' already exists"
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-
-const db = firebase.firestore();
-
-// ==========================
-// Configuration
-// ==========================
-const RESULTS_DB_KEY = "testSeriesResultsDB";
-const USER_ID = "default_user";
-
-// Optional status callback
-function updateStatus(message) {
-    console.log(message);
-}
-
-// ==========================
-// Backup Results DB
-// ==========================
-async function backupResultsDB() {
-    try {
-        const localData = localStorage.getItem(RESULTS_DB_KEY);
-
-        if (!localData) {
-            updateStatus("No Results DB found.");
-            return false;
-        }
-
-        const parsedData = JSON.parse(localData);
-
-        const docRef = db.collection("backups").doc(USER_ID);
-        const snap = await docRef.get();
-
-        const existingData = snap.exists ? snap.data() : {};
-
-        existingData[RESULTS_DB_KEY] = parsedData;
-        existingData.lastUpdated =
-            firebase.firestore.FieldValue.serverTimestamp();
-
-        await docRef.set(existingData);
-
-        updateStatus("Results DB backup successful.");
-        return true;
-
-    } catch (err) {
-        console.error(err);
-        updateStatus("Backup failed.");
-        return false;
-    }
-}
-
-// ==========================
-// Restore Results DB
-// ==========================
-async function restoreResultsDB() {
-    try {
-        const snap = await db.collection("backups").doc(USER_ID).get();
-
-        if (!snap.exists) {
-            updateStatus("No backup found.");
-            return false;
-        }
-
-        const data = snap.data();
-
-        if (!data[RESULTS_DB_KEY]) {
-            updateStatus("Results DB not found in cloud.");
-            return false;
-        }
-
-        localStorage.setItem(
-            RESULTS_DB_KEY,
-            JSON.stringify(data[RESULTS_DB_KEY])
-        );
-
-        updateStatus("Results DB restored successfully.");
-        return true;
-
-    } catch (err) {
-        console.error(err);
-        updateStatus("Restore failed.");
-        return false;
-    }
-}
 </script>
 
 </body>
