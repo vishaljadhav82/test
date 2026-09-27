@@ -18,6 +18,10 @@
         rel="stylesheet"
     >
 
+    <!-- Firebase App & Firestore SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
 </head>
 
 
@@ -196,26 +200,16 @@
 
                             <h5>
 
-                                No Topic Selected
+                                Loading Database...
 
                             </h5>
 
 
                             <p class="text-secondary">
 
-                                Select a topic and section
-                                from the left side.
+                                Please wait while we fetch your questions from Firebase.
 
                             </p>
-
-
-                            <button
-                                class="btn btn-primary"
-                                onclick="openTopicModal()">
-
-                                + Add Topic
-
-                            </button>
 
                         </div>
 
@@ -784,19 +778,28 @@
 <script>
 
 /* =========================================================
+   FIREBASE INITIALIZATION
+========================================================= */
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCSwr1mbjcFhjeWCoZIipb5TE3o0jLkU7M",
+    authDomain: "quiz-43b3e.firebaseapp.com",
+    projectId: "quiz-43b3e",
+    storageBucket: "quiz-43b3e.appspot.com",
+    messagingSenderId: "477037762591",
+    appId: "1:477037762591:web:03478c214a0477ff819d2a"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* =========================================================
    DATABASE
 ========================================================= */
 
-let data =
-    JSON.parse(
-        localStorage.getItem(
-            "questionBank"
-        )
-    ) || {
-
-        topics: []
-
-    };
+let data = {
+    topics: []
+};
 
 
 let currentTopicId = null;
@@ -831,16 +834,16 @@ const questionModal =
 
 
 /* =========================================================
-   SAVE DATABASE
+   SAVE DATABASE (FIRESTORE)
 ========================================================= */
 
-function saveDatabase() {
-
-    localStorage.setItem(
-        "questionBank",
-        JSON.stringify(data)
-    );
-
+async function saveDatabase() {
+    try {
+        await db.collection("questionBank").doc("mainData").set(data);
+    } catch (error) {
+        console.error("Error saving to Firebase: ", error);
+        alert("Failed to sync changes with Firebase.");
+    }
 }
 
 
@@ -862,12 +865,28 @@ function createId() {
 
 
 /* =========================================================
-   INITIALIZE
+   INITIALIZE FROM FIREBASE
 ========================================================= */
 
-renderSidebar();
+async function initApp() {
+    try {
+        const docRef = await db.collection("questionBank").doc("mainData").get();
+        if (docRef.exists && docRef.data().topics) {
+            data = docRef.data();
+        } else {
+            // Initialize default empty document if it doesn't exist
+            await db.collection("questionBank").doc("mainData").set({ topics: [] });
+        }
+    } catch (error) {
+        console.error("Error loading from Firebase: ", error);
+    }
 
-renderManagement();
+    renderSidebar();
+    renderManagement();
+    renderReader();
+}
+
+initApp();
 
 
 
@@ -1225,7 +1244,7 @@ function openTopicModal() {
    SAVE TOPIC
 ========================================================= */
 
-function saveTopic() {
+async function saveTopic() {
 
     const name =
         document.getElementById(
@@ -1277,7 +1296,7 @@ function saveTopic() {
     );
 
 
-    saveDatabase();
+    await saveDatabase();
 
 
     topicModal.hide();
@@ -1323,7 +1342,7 @@ function saveTopic() {
    ADD QUESTION MODAL
 ========================================================= */
 
-function openQuestionModal(
+async function openQuestionModal(
     question = null
 ) {
 
@@ -1371,7 +1390,7 @@ function openQuestionModal(
             section.id;
 
 
-        saveDatabase();
+        await saveDatabase();
 
         renderSidebar();
 
@@ -1687,7 +1706,7 @@ async function saveQuestion() {
     }
 
 
-    saveDatabase();
+    await saveDatabase();
 
 
     questionModal.hide();
@@ -2923,7 +2942,7 @@ function editQuestion(
    DELETE QUESTION
 ========================================================= */
 
-function deleteQuestion(
+async function deleteQuestion(
     questionId
 ) {
 
@@ -2992,7 +3011,7 @@ function deleteQuestion(
         );
 
 
-    saveDatabase();
+    await saveDatabase();
 
     renderSidebar();
 
@@ -3008,7 +3027,7 @@ function deleteQuestion(
    DELETE TOPIC
 ========================================================= */
 
-function deleteTopic(
+async function deleteTopic(
     topicId
 ) {
 
@@ -3050,7 +3069,7 @@ function deleteTopic(
     }
 
 
-    saveDatabase();
+    await saveDatabase();
 
     renderSidebar();
 
