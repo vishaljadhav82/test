@@ -1,0 +1,3289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Question Bank</title>
+
+    <!-- Bootstrap 5 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+</head>
+
+
+<body class="bg-light">
+
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<nav class="navbar bg-white border-bottom sticky-top">
+
+    <div class="container-fluid">
+
+        <div class="d-flex align-items-center gap-2">
+
+            <!-- Mobile Menu -->
+
+            <button
+                class="btn btn-outline-secondary d-md-none"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#sidebar">
+
+                ☰
+
+            </button>
+
+
+            <span class="navbar-brand fw-bold mb-0">
+
+                Question Bank
+
+            </span>
+
+        </div>
+
+
+        <!-- Mode -->
+
+        <button
+            id="modeButton"
+            class="btn btn-primary btn-sm"
+            onclick="toggleMode()">
+
+            CRUD Mode
+
+        </button>
+
+    </div>
+
+</nav>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<div class="container-fluid">
+
+    <div class="row">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside
+            id="sidebar"
+            class="offcanvas-md offcanvas-start col-md-3 col-lg-2 bg-white border-end"
+            tabindex="-1">
+
+
+            <!-- Mobile Header -->
+
+            <div class="offcanvas-header d-md-none">
+
+                <h5 class="offcanvas-title">
+
+                    Topics
+
+                </h5>
+
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="offcanvas">
+
+                </button>
+
+            </div>
+
+
+            <div class="offcanvas-body d-flex flex-column p-3">
+
+
+                <div
+                    class="small fw-bold text-secondary text-uppercase mb-3">
+
+                    Topics
+
+                </div>
+
+
+                <!-- Topics -->
+
+                <div
+                    id="topicList"
+                    class="list-group list-group-flush mb-3">
+
+                </div>
+
+
+                <!-- Add Topic -->
+
+                <button
+                    class="btn btn-primary w-100"
+                    onclick="openTopicModal()">
+
+                    + Add Topic
+
+                </button>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- =================================================
+             CONTENT
+        ================================================== -->
+
+        <main class="col-md-9 col-lg-10">
+
+            <div class="container py-3 py-md-4">
+
+
+                <!-- Breadcrumb -->
+
+                <nav
+                    aria-label="breadcrumb"
+                    class="mb-3">
+
+                    <ol
+                        id="breadcrumb"
+                        class="breadcrumb mb-0">
+
+                        <li class="breadcrumb-item">
+
+                            Question Bank
+
+                        </li>
+
+                    </ol>
+
+                </nav>
+
+
+
+                <!-- =================================================
+                     READING MODE
+                ================================================== -->
+
+                <section id="reader">
+
+
+                    <div
+                        class="card border-0 shadow-sm">
+
+                        <div
+                            class="card-body text-center py-5">
+
+
+                            <h5>
+
+                                No Topic Selected
+
+                            </h5>
+
+
+                            <p class="text-secondary">
+
+                                Select a topic and section
+                                from the left side.
+
+                            </p>
+
+
+                            <button
+                                class="btn btn-primary"
+                                onclick="openTopicModal()">
+
+                                + Add Topic
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     CRUD MODE
+                ================================================== -->
+
+                <section
+                    id="crudPanel"
+                    class="d-none">
+
+
+                    <!-- Topic Information -->
+
+                    <div
+                        class="card border-0 shadow-sm mb-3">
+
+                        <div
+                            class="card-header bg-white">
+
+                            <div
+                                class="d-flex justify-content-between align-items-center">
+
+
+                                <div>
+
+                                    <h6 class="mb-1">
+
+                                        Topics
+
+                                    </h6>
+
+
+                                    <small
+                                        class="text-secondary">
+
+                                        Add topics.
+                                        Sections are created
+                                        automatically.
+
+                                    </small>
+
+                                </div>
+
+
+                                <button
+                                    class="btn btn-primary btn-sm"
+                                    onclick="openTopicModal()">
+
+                                    + Topic
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            id="managementList"
+                            class="card-body">
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         QUESTIONS
+                    ================================================== -->
+
+                    <div
+                        class="card border-0 shadow-sm">
+
+
+                        <div
+                            class="card-header bg-white">
+
+                            <div
+                                class="d-flex justify-content-between align-items-center">
+
+
+                                <div>
+
+                                    <h6 class="mb-1">
+
+                                        Questions
+
+                                    </h6>
+
+
+                                    <small
+                                        id="managementSectionName"
+                                        class="text-secondary">
+
+                                    </small>
+
+                                </div>
+
+
+                                <button
+                                    class="btn btn-primary btn-sm"
+                                    onclick="openQuestionModal()">
+
+                                    + Question
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="card-body p-0">
+
+
+                            <div class="table-responsive">
+
+                                <table
+                                    class="table table-hover align-middle mb-0">
+
+
+                                    <thead>
+
+                                        <tr>
+
+                                            <th>#</th>
+
+                                            <th>
+                                                Question
+                                            </th>
+
+                                            <th>
+                                                Answer
+                                            </th>
+
+                                            <th>
+                                                Action
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+
+
+                                    <tbody
+                                        id="questionTableBody">
+
+                                    </tbody>
+
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     TOPIC MODAL
+========================================================= -->
+
+<div
+    id="topicModal"
+    class="modal fade"
+    tabindex="-1">
+
+
+    <div
+        class="modal-dialog modal-dialog-centered">
+
+
+        <div class="modal-content">
+
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    Add Topic
+
+                </h5>
+
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+
+                <label class="form-label">
+
+                    Topic Name
+
+                </label>
+
+
+                <input
+                    id="topicName"
+                    type="text"
+                    class="form-control"
+                    placeholder="Example: E-mail Etiquette">
+
+
+                <div
+                    class="form-text mt-2">
+
+                    Section 1 will be created automatically.
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+
+                <button
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    class="btn btn-primary"
+                    onclick="saveTopic()">
+
+                    Create Topic
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     QUESTION MODAL
+========================================================= -->
+
+<div
+    id="questionModal"
+    class="modal fade"
+    tabindex="-1">
+
+
+    <div
+        class="modal-dialog modal-lg modal-dialog-scrollable">
+
+
+        <div class="modal-content">
+
+
+            <div class="modal-header">
+
+
+                <div>
+
+                    <h5
+                        id="questionModalTitle"
+                        class="modal-title">
+
+                        Add Question
+
+                    </h5>
+
+
+                    <small
+                        id="questionSectionInfo"
+                        class="text-secondary">
+
+                    </small>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+
+                </button>
+
+            </div>
+
+
+
+            <div class="modal-body">
+
+
+                <!-- =========================================
+                     QUESTION TEXT
+                ========================================== -->
+
+                <div class="mb-4">
+
+                    <label class="form-label fw-semibold">
+
+                        Question Text
+
+                        <span
+                            class="text-secondary fw-normal">
+
+                            (optional)
+
+                        </span>
+
+                    </label>
+
+
+                    <textarea
+                        id="questionText"
+                        class="form-control"
+                        rows="3"
+                        placeholder="Enter question text">
+
+                    </textarea>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     QUESTION IMAGE
+                ========================================== -->
+
+                <div class="mb-4">
+
+
+                    <label class="form-label fw-semibold">
+
+                        Question Image
+
+                    </label>
+
+
+                    <div
+                        id="questionPasteZone"
+                        tabindex="0"
+                        class="border border-2 border-secondary-subtle rounded p-4 text-center bg-light">
+
+
+                        <div class="fs-1">
+
+                            📷
+
+                        </div>
+
+
+                        <div class="fw-semibold">
+
+                            Paste Question Screenshot
+
+                        </div>
+
+
+                        <div class="text-primary small">
+
+                            Ctrl + V
+
+                        </div>
+
+
+                        <div class="text-secondary small">
+
+                            Or choose an image
+
+                        </div>
+
+
+                        <input
+                            id="questionImage"
+                            type="file"
+                            class="form-control mt-3"
+                            accept="image/*">
+
+                    </div>
+
+
+                    <div
+                        id="questionPreview"
+                        class="mt-3 text-center">
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     ANSWER TEXT
+                ========================================== -->
+
+                <div class="mb-4">
+
+                    <label class="form-label fw-semibold">
+
+                        Answer Text
+
+                        <span
+                            class="text-secondary fw-normal">
+
+                            (optional)
+
+                        </span>
+
+                    </label>
+
+
+                    <textarea
+                        id="answerText"
+                        class="form-control"
+                        rows="3"
+                        placeholder="Enter answer text">
+
+                    </textarea>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     ANSWER IMAGE
+                ========================================== -->
+
+                <div class="mb-3">
+
+
+                    <label class="form-label fw-semibold">
+
+                        Answer Image
+
+                    </label>
+
+
+                    <div
+                        id="answerPasteZone"
+                        tabindex="0"
+                        class="border border-2 border-secondary-subtle rounded p-4 text-center bg-light">
+
+
+                        <div class="fs-1">
+
+                            🖼️
+
+                        </div>
+
+
+                        <div class="fw-semibold">
+
+                            Paste Answer Screenshot
+
+                        </div>
+
+
+                        <div class="text-primary small">
+
+                            Ctrl + V
+
+                        </div>
+
+
+                        <div class="text-secondary small">
+
+                            Or choose an image
+
+                        </div>
+
+
+                        <input
+                            id="answerImage"
+                            type="file"
+                            class="form-control mt-3"
+                            accept="image/*">
+
+                    </div>
+
+
+                    <div
+                        id="answerPreview"
+                        class="mt-3 text-center">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="modal-footer">
+
+
+                <button
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    class="btn btn-primary"
+                    onclick="saveQuestion()">
+
+                    Save Question
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     BOOTSTRAP JS
+========================================================= -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+
+<script>
+
+/* =========================================================
+   DATABASE
+========================================================= */
+
+let data =
+    JSON.parse(
+        localStorage.getItem(
+            "questionBank"
+        )
+    ) || {
+
+        topics: []
+
+    };
+
+
+let currentTopicId = null;
+
+let currentSectionId = null;
+
+let currentQuestionIndex = 0;
+
+let editQuestionId = null;
+
+
+
+/* =========================================================
+   MODALS
+========================================================= */
+
+const topicModal =
+    new bootstrap.Modal(
+        document.getElementById(
+            "topicModal"
+        )
+    );
+
+
+const questionModal =
+    new bootstrap.Modal(
+        document.getElementById(
+            "questionModal"
+        )
+    );
+
+
+
+/* =========================================================
+   SAVE DATABASE
+========================================================= */
+
+function saveDatabase() {
+
+    localStorage.setItem(
+        "questionBank",
+        JSON.stringify(data)
+    );
+
+}
+
+
+
+/* =========================================================
+   ID
+========================================================= */
+
+function createId() {
+
+    return Date.now().toString(36)
+        +
+        Math.random()
+            .toString(36)
+            .substring(2);
+
+}
+
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+renderSidebar();
+
+renderManagement();
+
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+function renderSidebar() {
+
+    const container =
+        document.getElementById(
+            "topicList"
+        );
+
+
+    container.innerHTML = "";
+
+
+    if (
+        data.topics.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div
+                class="text-secondary small p-2">
+
+                No topics yet.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    data.topics.forEach(
+        topic => {
+
+
+            /* Topic */
+
+            const topicItem =
+                document.createElement(
+                    "div"
+                );
+
+
+            topicItem.className =
+                "list-group-item fw-semibold";
+
+
+            topicItem.textContent =
+                topic.name;
+
+
+            container.appendChild(
+                topicItem
+            );
+
+
+            /* Sections */
+
+            topic.sections.forEach(
+                section => {
+
+
+                    const sectionButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    sectionButton.type =
+                        "button";
+
+
+                    sectionButton.className =
+                        "list-group-item list-group-item-action ps-4 small";
+
+
+                    if (
+                        section.id ===
+                        currentSectionId
+                    ) {
+
+                        sectionButton.classList.add(
+                            "active"
+                        );
+
+                    }
+
+
+                    sectionButton.innerHTML = `
+
+                        ${escapeHtml(
+                            section.name
+                        )}
+
+                        <span
+                            class="badge text-bg-secondary float-end">
+
+                            ${
+                                section.questions.length
+                            }
+
+                        </span>
+
+                    `;
+
+
+                    sectionButton.onclick =
+                        () => {
+
+                            selectSection(
+                                topic.id,
+                                section.id
+                            );
+
+                        };
+
+
+                    container.appendChild(
+                        sectionButton
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   SELECT SECTION
+========================================================= */
+
+function selectSection(
+    topicId,
+    sectionId
+) {
+
+    currentTopicId =
+        topicId;
+
+
+    currentSectionId =
+        sectionId;
+
+
+    currentQuestionIndex =
+        0;
+
+
+    renderSidebar();
+
+    renderReader();
+
+    renderManagement();
+
+
+    const sidebar =
+        document.getElementById(
+            "sidebar"
+        );
+
+
+    const instance =
+        bootstrap.Offcanvas
+            .getInstance(
+                sidebar
+            );
+
+
+    if (instance) {
+
+        instance.hide();
+
+    }
+
+}
+
+
+
+/* =========================================================
+   GET CURRENT TOPIC
+========================================================= */
+
+function getCurrentTopic() {
+
+    return data.topics.find(
+        topic =>
+            topic.id ===
+            currentTopicId
+    );
+
+}
+
+
+
+/* =========================================================
+   GET CURRENT SECTION
+========================================================= */
+
+function getCurrentSection() {
+
+    const topic =
+        getCurrentTopic();
+
+
+    if (!topic) return null;
+
+
+    return topic.sections.find(
+        section =>
+            section.id ===
+            currentSectionId
+    );
+
+}
+
+
+
+/* =========================================================
+   GET LAST SECTION
+========================================================= */
+
+function getLastSection(topic) {
+
+    return topic.sections[
+        topic.sections.length - 1
+    ];
+
+}
+
+
+
+/* =========================================================
+   AUTOMATIC SECTION
+========================================================= */
+
+function getSectionForNewQuestion(
+    topic
+) {
+
+    let section =
+        getLastSection(
+            topic
+        );
+
+
+    /*
+     * If there is no section,
+     * create Section 1.
+     */
+
+    if (!section) {
+
+        section = {
+
+            id: createId(),
+
+            name: "Section 1",
+
+            questions: []
+
+        };
+
+
+        topic.sections.push(
+            section
+        );
+
+
+        return section;
+
+    }
+
+
+    /*
+     * If current section has
+     * 10 questions, create
+     * next section automatically.
+     */
+
+    if (
+        section.questions.length >= 10
+    ) {
+
+        const nextNumber =
+            topic.sections.length + 1;
+
+
+        section = {
+
+            id: createId(),
+
+            name:
+                "Section " +
+                nextNumber,
+
+            questions: []
+
+        };
+
+
+        topic.sections.push(
+            section
+        );
+
+    }
+
+
+    return section;
+
+}
+
+
+
+/* =========================================================
+   ADD TOPIC
+========================================================= */
+
+function openTopicModal() {
+
+    document.getElementById(
+        "topicName"
+    ).value = "";
+
+
+    topicModal.show();
+
+
+    setTimeout(
+        () => {
+
+            document.getElementById(
+                "topicName"
+            ).focus();
+
+        },
+        300
+    );
+
+}
+
+
+
+/* =========================================================
+   SAVE TOPIC
+========================================================= */
+
+function saveTopic() {
+
+    const name =
+        document.getElementById(
+            "topicName"
+        ).value.trim();
+
+
+    if (!name) {
+
+        alert(
+            "Please enter a topic name."
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * Topic is created with
+     * Section 1 automatically.
+     */
+
+    const topic = {
+
+        id: createId(),
+
+        name: name,
+
+        sections: [
+
+            {
+
+                id: createId(),
+
+                name: "Section 1",
+
+                questions: []
+
+            }
+
+        ]
+
+    };
+
+
+    data.topics.push(
+        topic
+    );
+
+
+    saveDatabase();
+
+
+    topicModal.hide();
+
+
+    /*
+     * Automatically select
+     * Section 1.
+     */
+
+    currentTopicId =
+        topic.id;
+
+
+    currentSectionId =
+        topic.sections[0].id;
+
+
+    currentQuestionIndex =
+        0;
+
+
+    renderSidebar();
+
+    renderReader();
+
+    renderManagement();
+
+
+    /*
+     * Automatically switch
+     * to CRUD mode so user
+     * can immediately add Q1.
+     */
+
+    showCRUD();
+
+}
+
+
+
+/* =========================================================
+   ADD QUESTION MODAL
+========================================================= */
+
+function openQuestionModal(
+    question = null
+) {
+
+    const topic =
+        getCurrentTopic();
+
+
+    /*
+     * If no topic exists,
+     * create one first.
+     */
+
+    if (!topic) {
+
+        alert(
+            "Please create a topic first."
+        );
+
+        openTopicModal();
+
+        return;
+
+    }
+
+
+    /*
+     * For NEW question,
+     * automatically find the
+     * correct section.
+     */
+
+    let section =
+        getCurrentSection();
+
+
+    if (!question) {
+
+        section =
+            getSectionForNewQuestion(
+                topic
+            );
+
+
+        currentSectionId =
+            section.id;
+
+
+        saveDatabase();
+
+        renderSidebar();
+
+    }
+
+
+    editQuestionId =
+        question
+        ?
+        question.id
+        :
+        null;
+
+
+    document.getElementById(
+        "questionModalTitle"
+    ).textContent =
+        question
+        ?
+        "Edit Question"
+        :
+        "Add Question";
+
+
+    document.getElementById(
+        "questionText"
+    ).value =
+        question?.questionText || "";
+
+
+    document.getElementById(
+        "answerText"
+    ).value =
+        question?.answerText || "";
+
+
+    document.getElementById(
+        "questionImage"
+    ).value = "";
+
+
+    document.getElementById(
+        "answerImage"
+    ).value = "";
+
+
+    document.getElementById(
+        "questionPreview"
+    ).innerHTML =
+        question?.questionImage
+        ?
+        `
+        <img
+            src="${question.questionImage}"
+            class="img-fluid rounded border"
+            style="max-height:250px">
+        `
+        :
+        "";
+
+
+    document.getElementById(
+        "answerPreview"
+    ).innerHTML =
+        question?.answerImage
+        ?
+        `
+        <img
+            src="${question.answerImage}"
+            class="img-fluid rounded border"
+            style="max-height:250px">
+        `
+        :
+        "";
+
+
+    document.getElementById(
+        "questionSectionInfo"
+    ).textContent =
+        question
+        ?
+        getCurrentSection().name
+        :
+        section.name;
+
+
+    questionModal.show();
+
+}
+
+
+
+/* =========================================================
+   SAVE QUESTION
+========================================================= */
+
+async function saveQuestion() {
+
+    const topic =
+        getCurrentTopic();
+
+
+    if (!topic) {
+
+        alert(
+            "Please create a topic first."
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * Find section.
+     */
+
+    let section =
+        getCurrentSection();
+
+
+    /*
+     * For new question,
+     * make sure section has
+     * space.
+     */
+
+    if (!editQuestionId) {
+
+        section =
+            getSectionForNewQuestion(
+                topic
+            );
+
+
+        currentSectionId =
+            section.id;
+
+    }
+
+
+    const questionText =
+        document.getElementById(
+            "questionText"
+        ).value.trim();
+
+
+    const answerText =
+        document.getElementById(
+            "answerText"
+        ).value.trim();
+
+
+    const questionFile =
+        document.getElementById(
+            "questionImage"
+        ).files[0];
+
+
+    const answerFile =
+        document.getElementById(
+            "answerImage"
+        ).files[0];
+
+
+    /*
+     * Existing question
+     */
+
+    let existing =
+        null;
+
+
+    if (editQuestionId) {
+
+        /*
+         * Search all sections because
+         * edited question may have
+         * come from another section.
+         */
+
+        for (
+            const sec of topic.sections
+        ) {
+
+            existing =
+                sec.questions.find(
+                    q =>
+                        q.id ===
+                        editQuestionId
+                );
+
+
+            if (existing) {
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    let questionImage =
+        existing?.questionImage || "";
+
+
+    let answerImage =
+        existing?.answerImage || "";
+
+
+    if (questionFile) {
+
+        questionImage =
+            await fileToBase64(
+                questionFile
+            );
+
+    }
+
+
+    if (answerFile) {
+
+        answerImage =
+            await fileToBase64(
+                answerFile
+            );
+
+    }
+
+
+    /*
+     * Validation
+     */
+
+    if (
+        !questionText &&
+        !questionImage
+    ) {
+
+        alert(
+            "Add question text or question image."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !answerText &&
+        !answerImage
+    ) {
+
+        alert(
+            "Add answer text or answer image."
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * EDIT
+     */
+
+    if (existing) {
+
+        existing.questionText =
+            questionText;
+
+
+        existing.questionImage =
+            questionImage;
+
+
+        existing.answerText =
+            answerText;
+
+
+        existing.answerImage =
+            answerImage;
+
+    }
+
+
+    /*
+     * NEW
+     */
+
+    else {
+
+        section.questions.push({
+
+            id: createId(),
+
+            questionText:
+                questionText,
+
+            questionImage:
+                questionImage,
+
+            answerText:
+                answerText,
+
+            answerImage:
+                answerImage
+
+        });
+
+    }
+
+
+    saveDatabase();
+
+
+    questionModal.hide();
+
+
+    /*
+     * Stay on the section where
+     * question was added.
+     */
+
+    renderSidebar();
+
+    renderReader();
+
+    renderManagement();
+
+
+    /*
+     * Prepare next question.
+     */
+
+    if (!editQuestionId) {
+
+        currentQuestionIndex =
+            section.questions.length - 1;
+
+    }
+
+
+    editQuestionId =
+        null;
+
+}
+
+
+
+/* =========================================================
+   FILE → BASE64
+========================================================= */
+
+function fileToBase64(
+    file
+) {
+
+    return new Promise(
+        (resolve, reject) => {
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                () => {
+
+                    resolve(
+                        reader.result
+                    );
+
+                };
+
+
+            reader.onerror =
+                reject;
+
+
+            reader.readAsDataURL(
+                file
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   IMAGE PREVIEW
+========================================================= */
+
+function showPreview(
+    file,
+    preview
+) {
+
+    if (
+        !file ||
+        !file.type.startsWith(
+            "image/"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        event => {
+
+            preview.innerHTML = `
+
+                <img
+                    src="${event.target.result}"
+                    class="img-fluid rounded border"
+                    style="max-height:250px">
+
+            `;
+
+        };
+
+
+    reader.readAsDataURL(
+        file
+    );
+
+}
+
+
+
+/* =========================================================
+   PASTE / UPLOAD / DROP
+========================================================= */
+
+function setupImageInput(
+    zoneId,
+    inputId,
+    previewId
+) {
+
+    const zone =
+        document.getElementById(
+            zoneId
+        );
+
+
+    const input =
+        document.getElementById(
+            inputId
+        );
+
+
+    const preview =
+        document.getElementById(
+            previewId
+        );
+
+
+    /*
+     * Focus zone
+     */
+
+    zone.addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target !==
+                input
+            ) {
+
+                zone.focus();
+
+            }
+
+        }
+    );
+
+
+    /*
+     * PASTE
+     *
+     * Works with:
+     *
+     * Snipping Tool
+     * Ctrl + C
+     * Ctrl + V
+     */
+
+    zone.addEventListener(
+        "paste",
+        function(event) {
+
+            const items =
+                event.clipboardData.items;
+
+
+            for (
+                const item of items
+            ) {
+
+
+                if (
+                    item.type.startsWith(
+                        "image/"
+                    )
+                ) {
+
+                    event.preventDefault();
+
+
+                    const file =
+                        item.getAsFile();
+
+
+                    if (file) {
+
+                        showPreview(
+                            file,
+                            preview
+                        );
+
+
+                        setFileInput(
+                            input,
+                            file
+                        );
+
+                    }
+
+
+                    break;
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /*
+     * File upload
+     */
+
+    input.addEventListener(
+        "change",
+        function() {
+
+            const file =
+                this.files[0];
+
+
+            if (file) {
+
+                showPreview(
+                    file,
+                    preview
+                );
+
+            }
+
+        }
+    );
+
+
+    /*
+     * Drag over
+     */
+
+    zone.addEventListener(
+        "dragover",
+        function(event) {
+
+            event.preventDefault();
+
+
+            zone.classList.add(
+                "border-primary"
+            );
+
+        }
+    );
+
+
+    /*
+     * Drag leave
+     */
+
+    zone.addEventListener(
+        "dragleave",
+        function() {
+
+            zone.classList.remove(
+                "border-primary"
+            );
+
+        }
+    );
+
+
+    /*
+     * Drop
+     */
+
+    zone.addEventListener(
+        "drop",
+        function(event) {
+
+            event.preventDefault();
+
+
+            zone.classList.remove(
+                "border-primary"
+            );
+
+
+            const file =
+                event.dataTransfer.files[0];
+
+
+            if (
+                file &&
+                file.type.startsWith(
+                    "image/"
+                )
+            ) {
+
+                showPreview(
+                    file,
+                    preview
+                );
+
+
+                setFileInput(
+                    input,
+                    file
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   SET FILE INPUT
+========================================================= */
+
+function setFileInput(
+    input,
+    file
+) {
+
+    try {
+
+        const transfer =
+            new DataTransfer();
+
+
+        transfer.items.add(
+            file
+        );
+
+
+        input.files =
+            transfer.files;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   READING MODE
+========================================================= */
+
+function renderReader() {
+
+    const reader =
+        document.getElementById(
+            "reader"
+        );
+
+
+    const section =
+        getCurrentSection();
+
+
+    const topic =
+        getCurrentTopic();
+
+
+    if (
+        !topic ||
+        !section
+    ) {
+
+        reader.innerHTML = `
+
+            <div
+                class="card border-0 shadow-sm">
+
+                <div
+                    class="card-body text-center py-5">
+
+                    <h5>
+
+                        No Section Selected
+
+                    </h5>
+
+                    <p class="text-secondary">
+
+                        Select a section to begin.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /*
+     * Empty section
+     */
+
+    if (
+        section.questions.length === 0
+    ) {
+
+        reader.innerHTML = `
+
+            <div
+                class="card border-0 shadow-sm">
+
+                <div
+                    class="card-body text-center py-5">
+
+                    <h5>
+
+                        ${escapeHtml(
+                            section.name
+                        )}
+
+                    </h5>
+
+
+                    <p class="text-secondary">
+
+                        No questions yet.
+
+                    </p>
+
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="openQuestionModal()">
+
+                        + Add Question
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /*
+     * Correct page
+     */
+
+    if (
+        currentQuestionIndex >=
+        section.questions.length
+    ) {
+
+        currentQuestionIndex =
+            section.questions.length - 1;
+
+    }
+
+
+    const question =
+        section.questions[
+            currentQuestionIndex
+        ];
+
+
+    /*
+     * Breadcrumb
+     */
+
+    document.getElementById(
+        "breadcrumb"
+    ).innerHTML = `
+
+        <li class="breadcrumb-item">
+
+            ${escapeHtml(
+                topic.name
+            )}
+
+        </li>
+
+
+        <li class="breadcrumb-item active">
+
+            ${escapeHtml(
+                section.name
+            )}
+
+        </li>
+
+    `;
+
+
+    /*
+     * Question text
+     */
+
+    let questionText = "";
+
+
+    if (question.questionText) {
+
+        questionText = `
+
+            <div class="mb-4">
+
+                <div
+                    class="fs-5 fw-semibold">
+
+                    ${escapeHtml(
+                        question.questionText
+                    )}
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /*
+     * Question image
+     */
+
+    let questionImage = "";
+
+
+    if (question.questionImage) {
+
+        questionImage = `
+
+            <div class="text-center mb-4">
+
+                <img
+                    src="${question.questionImage}"
+                    class="img-fluid rounded"
+                    alt="Question">
+
+            </div>
+
+        `;
+
+    }
+
+
+    /*
+     * Answer
+     */
+
+    let answer = "";
+
+
+    if (
+        question.answerText ||
+        question.answerImage
+    ) {
+
+        answer = `
+
+            <hr class="my-4">
+
+
+            <div class="small fw-bold text-secondary text-uppercase mb-3">
+
+                Answer
+
+            </div>
+
+
+            ${
+                question.answerText
+                ?
+                `
+                <div class="mb-4">
+
+                    ${escapeHtml(
+                        question.answerText
+                    )}
+
+                </div>
+                `
+                :
+                ""
+            }
+
+
+            ${
+                question.answerImage
+                ?
+                `
+                <div class="text-center">
+
+                    <img
+                        src="${question.answerImage}"
+                        class="img-fluid rounded"
+                        alt="Answer">
+
+                </div>
+                `
+                :
+                ""
+            }
+
+        `;
+
+    }
+
+
+    /*
+     * Reader
+     */
+
+    reader.innerHTML = `
+
+        <div
+            class="card border-0 shadow-sm">
+
+
+            <!-- Header -->
+
+            <div
+                class="card-header bg-white
+                       d-flex justify-content-between
+                       align-items-center">
+
+                <span class="fw-semibold">
+
+                    ${escapeHtml(
+                        section.name
+                    )}
+
+                </span>
+
+
+                <span
+                    class="text-secondary small">
+
+                    ${
+                        currentQuestionIndex + 1
+                    }
+                    /
+                    ${
+                        section.questions.length
+                    }
+
+                </span>
+
+            </div>
+
+
+            <!-- Body -->
+
+            <div class="card-body">
+
+
+                ${questionText}
+
+
+                ${questionImage}
+
+
+                ${answer}
+
+
+            </div>
+
+
+            <!-- Navigation -->
+
+            <div
+                class="card-footer bg-white">
+
+
+                <div
+                    class="d-flex
+                           justify-content-between
+                           align-items-center
+                           gap-2">
+
+
+                    <button
+                        class="btn btn-outline-secondary"
+                        onclick="previousQuestion()"
+                        ${
+                            currentQuestionIndex === 0
+                            ? "disabled"
+                            : ""
+                        }>
+
+                        ← Previous
+
+                    </button>
+
+
+                    <span
+                        class="small text-secondary text-nowrap">
+
+                        ${
+                            currentQuestionIndex + 1
+                        }
+                        /
+                        ${
+                            section.questions.length
+                        }
+
+                    </span>
+
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="nextQuestion()"
+                        ${
+                            currentQuestionIndex ===
+                            section.questions.length - 1
+                            ? "disabled"
+                            : ""
+                        }>
+
+                        Next →
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   NEXT QUESTION
+========================================================= */
+
+function nextQuestion() {
+
+    const section =
+        getCurrentSection();
+
+
+    if (!section) return;
+
+
+    if (
+        currentQuestionIndex <
+        section.questions.length - 1
+    ) {
+
+        currentQuestionIndex++;
+
+
+        renderReader();
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+}
+
+
+
+/* =========================================================
+   PREVIOUS QUESTION
+========================================================= */
+
+function previousQuestion() {
+
+    if (
+        currentQuestionIndex > 0
+    ) {
+
+        currentQuestionIndex--;
+
+
+        renderReader();
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+}
+
+
+
+/* =========================================================
+   CRUD MANAGEMENT
+========================================================= */
+
+function renderManagement() {
+
+    const container =
+        document.getElementById(
+            "managementList"
+        );
+
+
+    container.innerHTML = "";
+
+
+    if (
+        data.topics.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="text-center text-secondary py-4">
+
+                No topics created.
+
+            </div>
+
+        `;
+
+    }
+
+
+    data.topics.forEach(
+        topic => {
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "card mb-2";
+
+
+            card.innerHTML = `
+
+                <div class="card-body">
+
+
+                    <div
+                        class="d-flex
+                               justify-content-between
+                               align-items-center">
+
+
+                        <strong>
+
+                            ${escapeHtml(
+                                topic.name
+                            )}
+
+                        </strong>
+
+
+                        <button
+                            class="btn btn-outline-danger btn-sm"
+                            onclick="
+                                deleteTopic(
+                                    '${topic.id}'
+                                )
+                            ">
+
+                            Delete
+
+                        </button>
+
+
+                    </div>
+
+
+                    <div
+                        class="mt-3">
+
+                        ${topic.sections.map(
+                            section => `
+
+                            <div
+                                class="border-top py-2">
+
+                                <div
+                                    class="d-flex
+                                           justify-content-between
+                                           align-items-center">
+
+
+                                    <div>
+
+                                        <span class="fw-semibold">
+
+                                            ${escapeHtml(
+                                                section.name
+                                            )}
+
+                                        </span>
+
+
+                                        <span
+                                            class="badge text-bg-secondary ms-1">
+
+                                            ${
+                                                section.questions.length
+                                            }
+                                            / 10
+
+                                        </span>
+
+                                    </div>
+
+
+                                    <button
+                                        class="btn btn-outline-primary btn-sm"
+                                        onclick="
+                                            selectSection(
+                                                '${topic.id}',
+                                                '${section.id}'
+                                            );
+                                            showCRUD();
+                                        ">
+
+                                        Manage
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        `
+                        ).join("")}
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+    );
+
+
+    renderQuestionManagement();
+
+}
+
+
+
+/* =========================================================
+   QUESTION TABLE
+========================================================= */
+
+function renderQuestionManagement() {
+
+    const section =
+        getCurrentSection();
+
+
+    const title =
+        document.getElementById(
+            "managementSectionName"
+        );
+
+
+    const tbody =
+        document.getElementById(
+            "questionTableBody"
+        );
+
+
+    if (!section) {
+
+        title.textContent =
+            "Select a section.";
+
+
+        tbody.innerHTML = "";
+
+        return;
+
+    }
+
+
+    title.textContent =
+        section.name +
+        " — " +
+        section.questions.length +
+        "/10 questions";
+
+
+    tbody.innerHTML = "";
+
+
+    section.questions.forEach(
+        (question, index) => {
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+
+                    ${index + 1}
+
+                </td>
+
+
+                <td>
+
+                    ${
+                        question.questionImage
+                        ?
+                        `
+                        <img
+                            src="${question.questionImage}"
+                            class="img-thumbnail"
+                            style="
+                                width:70px;
+                                height:50px;
+                                object-fit:cover;
+                            ">
+                        `
+                        :
+                        escapeHtml(
+                            question.questionText ||
+                            "Question"
+                        )
+                    }
+
+                </td>
+
+
+                <td>
+
+                    ${
+                        question.answerImage
+                        ?
+                        `
+                        <img
+                            src="${question.answerImage}"
+                            class="img-thumbnail"
+                            style="
+                                width:70px;
+                                height:50px;
+                                object-fit:cover;
+                            ">
+                        `
+                        :
+                        escapeHtml(
+                            question.answerText ||
+                            "Answer"
+                        )
+                    }
+
+                </td>
+
+
+                <td>
+
+                    <div
+                        class="btn-group btn-group-sm">
+
+
+                        <button
+                            class="btn btn-outline-primary"
+                            onclick="
+                                editQuestion(
+                                    '${question.id}'
+                                )
+                            ">
+
+                            Edit
+
+                        </button>
+
+
+                        <button
+                            class="btn btn-outline-danger"
+                            onclick="
+                                deleteQuestion(
+                                    '${question.id}'
+                                )
+                            ">
+
+                            Delete
+
+                        </button>
+
+
+                    </div>
+
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   EDIT QUESTION
+========================================================= */
+
+function editQuestion(
+    questionId
+) {
+
+    const topic =
+        getCurrentTopic();
+
+
+    if (!topic) return;
+
+
+    let foundQuestion =
+        null;
+
+
+    let foundSection =
+        null;
+
+
+    topic.sections.forEach(
+        section => {
+
+            const question =
+                section.questions.find(
+                    q =>
+                        q.id ===
+                        questionId
+                );
+
+
+            if (question) {
+
+                foundQuestion =
+                    question;
+
+                foundSection =
+                    section;
+
+            }
+
+        }
+    );
+
+
+    if (!foundQuestion) return;
+
+
+    currentSectionId =
+        foundSection.id;
+
+
+    openQuestionModal(
+        foundQuestion
+    );
+
+}
+
+
+
+/* =========================================================
+   DELETE QUESTION
+========================================================= */
+
+function deleteQuestion(
+    questionId
+) {
+
+    const topic =
+        getCurrentTopic();
+
+
+    if (!topic) return;
+
+
+    let sectionFound =
+        null;
+
+
+    topic.sections.forEach(
+        section => {
+
+            const exists =
+                section.questions.some(
+                    q =>
+                        q.id ===
+                        questionId
+                );
+
+
+            if (exists) {
+
+                sectionFound =
+                    section;
+
+            }
+
+        }
+    );
+
+
+    if (!sectionFound) return;
+
+
+    if (
+        !confirm(
+            "Delete this question?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    sectionFound.questions =
+        sectionFound.questions.filter(
+            q =>
+                q.id !==
+                questionId
+        );
+
+
+    currentQuestionIndex =
+        Math.min(
+            currentQuestionIndex,
+            Math.max(
+                0,
+                sectionFound.questions.length - 1
+            )
+        );
+
+
+    saveDatabase();
+
+    renderSidebar();
+
+    renderReader();
+
+    renderManagement();
+
+}
+
+
+
+/* =========================================================
+   DELETE TOPIC
+========================================================= */
+
+function deleteTopic(
+    topicId
+) {
+
+    if (
+        !confirm(
+            "Delete this topic and all its questions?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    data.topics =
+        data.topics.filter(
+            topic =>
+                topic.id !==
+                topicId
+        );
+
+
+    if (
+        currentTopicId ===
+        topicId
+    ) {
+
+        currentTopicId =
+            null;
+
+
+        currentSectionId =
+            null;
+
+
+        currentQuestionIndex =
+            0;
+
+    }
+
+
+    saveDatabase();
+
+    renderSidebar();
+
+    renderReader();
+
+    renderManagement();
+
+}
+
+
+
+/* =========================================================
+   MODE SWITCH
+========================================================= */
+
+function toggleMode() {
+
+    const reader =
+        document.getElementById(
+            "reader"
+        );
+
+
+    const crud =
+        document.getElementById(
+            "crudPanel"
+        );
+
+
+    const button =
+        document.getElementById(
+            "modeButton"
+        );
+
+
+    if (
+        crud.classList.contains(
+            "d-none"
+        )
+    ) {
+
+        reader.classList.add(
+            "d-none"
+        );
+
+
+        crud.classList.remove(
+            "d-none"
+        );
+
+
+        button.textContent =
+            "Reading Mode";
+
+
+        renderManagement();
+
+    }
+
+    else {
+
+        crud.classList.add(
+            "d-none"
+        );
+
+
+        reader.classList.remove(
+            "d-none"
+        );
+
+
+        button.textContent =
+            "CRUD Mode";
+
+
+        renderReader();
+
+    }
+
+}
+
+
+
+/* =========================================================
+   SHOW CRUD
+========================================================= */
+
+function showCRUD() {
+
+    document.getElementById(
+        "reader"
+    ).classList.add(
+        "d-none"
+    );
+
+
+    document.getElementById(
+        "crudPanel"
+    ).classList.remove(
+        "d-none"
+    );
+
+
+    document.getElementById(
+        "modeButton"
+    ).textContent =
+        "Reading Mode";
+
+
+    renderManagement();
+
+}
+
+
+
+/* =========================================================
+   KEYBOARD NAVIGATION
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        /*
+         * Don't navigate while
+         * typing inside an input.
+         */
+
+        const tag =
+            document.activeElement.tagName;
+
+
+        if (
+            tag === "INPUT" ||
+            tag === "TEXTAREA"
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            document.querySelector(
+                ".modal.show"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            event.key ===
+            "ArrowRight"
+        ) {
+
+            nextQuestion();
+
+        }
+
+
+        if (
+            event.key ===
+            "ArrowLeft"
+        ) {
+
+            previousQuestion();
+
+        }
+
+    }
+);
+
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(
+    value
+) {
+
+    if (!value) return "";
+
+
+    return value
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+
+/* =========================================================
+   IMAGE INPUTS
+========================================================= */
+
+setupImageInput(
+    "questionPasteZone",
+    "questionImage",
+    "questionPreview"
+);
+
+
+setupImageInput(
+    "answerPasteZone",
+    "answerImage",
+    "answerPreview"
+);
+
+</script>
+
+</body>
+
+</html>
